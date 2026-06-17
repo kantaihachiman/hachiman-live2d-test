@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D 表示テスト</title>
+<title>はちまん Live2D 表示テスト v0.2</title>
 <style>
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   body {
     margin: 0;
@@ -17,21 +15,15 @@
     color: #fff7df;
     background:
       radial-gradient(circle at 50% 18%, rgba(255, 227, 142, 0.18), transparent 34%),
-      linear-gradient(180deg, #251714 0%, #56321f 55%, #c18b4a 100%);
+      linear-gradient(180deg, #251714 0%, #56321f 55%, #c18b1a 100%);
   }
 
-  .wrap {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-  }
+  .wrap { position: relative; width: 100vw; height: 100vh; }
 
   header {
     position: absolute;
     z-index: 5;
-    left: 0;
-    right: 0;
-    top: 0;
+    left: 0; right: 0; top: 0;
     padding: 18px 16px;
     text-align: center;
     pointer-events: none;
@@ -44,22 +36,13 @@
     text-shadow: 3px 3px 0 #3b2015;
   }
 
-  .sub {
-    margin-top: 8px;
-    font-weight: 800;
-    opacity: .9;
-  }
+  .sub { margin-top: 8px; font-weight: 800; opacity: .9; }
 
-  #stage {
-    position: absolute;
-    inset: 0;
-  }
+  #stage { position: absolute; inset: 0; }
 
   .floor {
     position: absolute;
-    left: -10%;
-    right: -10%;
-    bottom: -78px;
+    left: -10%; right: -10%; bottom: -78px;
     height: 260px;
     background:
       repeating-linear-gradient(90deg, #b87938 0 70px, #a86931 70px 76px),
@@ -74,8 +57,7 @@
   .counter {
     position: absolute;
     z-index: 2;
-    left: 50%;
-    bottom: 44px;
+    left: 50%; bottom: 44px;
     transform: translateX(-50%);
     width: min(720px, 86vw);
     height: 112px;
@@ -89,8 +71,7 @@
   .sign {
     position: absolute;
     z-index: 6;
-    left: 50%;
-    bottom: 132px;
+    left: 50%; bottom: 132px;
     transform: translateX(-50%);
     padding: 10px 22px;
     min-width: 240px;
@@ -108,12 +89,11 @@
   .status {
     position: absolute;
     z-index: 10;
-    left: 16px;
-    bottom: 16px;
-    max-width: min(520px, calc(100vw - 32px));
+    left: 16px; bottom: 16px;
+    max-width: min(620px, calc(100vw - 32px));
     padding: 12px 14px;
     color: #3f2a1e;
-    background: rgba(255, 249, 232, .94);
+    background: rgba(255,249,232,.94);
     border: 3px solid #4d2a1a;
     border-radius: 14px;
     box-shadow: 5px 5px 0 rgba(0,0,0,.18);
@@ -126,13 +106,13 @@
     margin-top: 4px;
     color: #7a5b42;
     font-weight: 800;
+    word-break: break-all;
   }
 
   .buttons {
     position: absolute;
     z-index: 11;
-    right: 16px;
-    bottom: 16px;
+    right: 16px; bottom: 16px;
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
@@ -151,17 +131,13 @@
     cursor: pointer;
   }
 
-  button:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #5c2219;
-  }
+  button:active { transform: translateY(3px); box-shadow: 0 1px 0 #5c2219; }
 
   .speech {
     position: absolute;
     z-index: 9;
-    right: 32px;
-    top: 120px;
-    width: min(380px, 42vw);
+    right: 32px; top: 120px;
+    width: min(420px, 44vw);
     min-height: 96px;
     padding: 16px 18px;
     color: #3f2a1e;
@@ -173,30 +149,19 @@
     line-height: 1.6;
   }
 
-  .speech small {
-    display: block;
-    color: #7a5b42;
-    margin-bottom: 4px;
-  }
+  .speech small { display: block; color: #7a5b42; margin-bottom: 4px; }
 
   @media (max-width: 700px) {
     .speech {
-      left: 16px;
-      right: 16px;
-      top: 98px;
+      left: 16px; right: 16px; top: 98px;
       width: auto;
       font-size: 13px;
     }
 
-    .status {
-      font-size: 12px;
-      bottom: 76px;
-    }
+    .status { font-size: 12px; bottom: 76px; }
 
     .buttons {
-      left: 16px;
-      right: 16px;
-      bottom: 12px;
+      left: 16px; right: 16px; bottom: 12px;
       justify-content: center;
     }
 
@@ -207,14 +172,8 @@
       font-size: 12px;
     }
 
-    .counter {
-      bottom: 86px;
-      height: 94px;
-    }
-
-    .sign {
-      bottom: 164px;
-    }
+    .counter { bottom: 86px; height: 94px; }
+    .sign { bottom: 164px; }
   }
 </style>
 </head>
@@ -222,7 +181,7 @@
 <div class="wrap">
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="sub">Live2D はちまん表示テスト</div>
+    <div class="sub">Live2D はちまん表示テスト v0.2</div>
   </header>
 
   <canvas id="stage"></canvas>
@@ -248,23 +207,76 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
-<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
-
 <script>
 const MODEL_PATH = "export/hachiman.model3.json";
-
 const statusEl = document.getElementById("status");
 const speechText = document.getElementById("speechText");
 const canvas = document.getElementById("stage");
 
-let app;
-let model;
+let app = null;
+let model = null;
 let baseScale = 0.32;
 
-function setStatus(text) {
-  statusEl.innerHTML = text + '<small>モデルパス：' + MODEL_PATH + '</small>';
+function setStatus(text, detail) {
+  statusEl.innerHTML =
+    text +
+    "<small>モデルパス：" + MODEL_PATH + "</small>" +
+    (detail ? "<small>" + detail + "</small>" : "");
+}
+
+function loadScriptList(urls, label) {
+  return new Promise((resolve, reject) => {
+    let index = 0;
+
+    const tryNext = () => {
+      if (index >= urls.length) {
+        reject(new Error(label + " を読み込めませんでした。"));
+        return;
+      }
+
+      const url = urls[index++];
+      setStatus(label + " を読み込み中……", url);
+
+      const script = document.createElement("script");
+      script.src = url;
+      script.async = false;
+
+      script.onload = () => resolve(url);
+      script.onerror = () => {
+        script.remove();
+        tryNext();
+      };
+
+      document.head.appendChild(script);
+    };
+
+    tryNext();
+  });
+}
+
+async function loadLibraries() {
+  await loadScriptList([
+    "https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js",
+    "https://unpkg.com/pixi.js@6.5.10/dist/browser/pixi.min.js"
+  ], "PIXI.js");
+
+  window.PIXI = window.PIXI || PIXI;
+
+  await loadScriptList([
+    "https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js",
+    "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples/Core/live2dcubismcore.min.js"
+  ], "Live2D Cubism Core");
+
+  await loadScriptList([
+    "https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js",
+    "https://unpkg.com/pixi-live2d-display@0.4.0/dist/index.min.js",
+    "https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js",
+    "https://unpkg.com/pixi-live2d-display/dist/index.min.js"
+  ], "pixi-live2d-display");
+
+  if (!PIXI.live2d || !PIXI.live2d.Live2DModel) {
+    throw new Error("pixi-live2d-display は読み込まれましたが、PIXI.live2d.Live2DModel が見つかりません。");
+  }
 }
 
 function placeModel() {
@@ -272,23 +284,16 @@ function placeModel() {
 
   const w = app.renderer.width;
   const h = app.renderer.height;
-
   const scale = Math.min(w / 900, h / 900) * baseScale;
-  model.scale.set(scale);
 
+  model.scale.set(scale);
   model.x = w * 0.5;
-  model.y = h * 0.78;
+  model.y = h * 0.80;
 }
 
 async function init() {
   try {
-    if (!window.PIXI) {
-      throw new Error("PIXI.js を読み込めませんでした。");
-    }
-
-    if (!PIXI.live2d || !PIXI.live2d.Live2DModel) {
-      throw new Error("pixi-live2d-display を読み込めませんでした。");
-    }
+    await loadLibraries();
 
     app = new PIXI.Application({
       view: canvas,
@@ -305,7 +310,6 @@ async function init() {
     });
 
     app.stage.addChild(model);
-
     model.anchor.set(0.5, 0.92);
     placeModel();
 
@@ -316,10 +320,11 @@ async function init() {
     window.addEventListener("resize", placeModel);
 
     setStatus("読み込み成功。はちまん表示中なのです。");
+    speechText.textContent = "表示成功なのです。艦隊八幡社へようこそなのです。";
   } catch (error) {
     console.error(error);
     setStatus("読み込み失敗：" + error.message);
-    speechText.textContent = "Live2Dの読み込みに失敗したのです。ファイル名と配置を確認してほしいのです。";
+    speechText.textContent = "Live2Dの読み込みに失敗したのです。画面下のエラー内容を確認してほしいのです。";
   }
 }
 
