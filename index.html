@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D パラメータ調査 v0.4</title>
+<title>はちまん Live2D パラメータ調査 v0.4a</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:radial-gradient(circle at 50% 18%,rgba(255,227,142,.18),transparent 34%),linear-gradient(180deg,#251714 0%,#56321f 55%,#9b6517 100%)}
@@ -34,22 +34,76 @@ button.subbtn{background:#3f735d;box-shadow:0 3px 0 #254537}
 .param output{font-size:12px;text-align:right;font-weight:900}
 .note{font-size:12px;line-height:1.5;color:#6b4b35;font-weight:800}
 .hide{display:none}
+
 @media(max-width:900px){
-  body{overflow:auto}.wrap{min-height:1120px;overflow:visible}#stage{height:720px}
-  .panel{position:relative;left:auto;top:auto;width:calc(100% - 20px);max-height:none;margin:740px auto 16px}
-  .speech{left:16px;right:16px;top:92px;width:auto;font-size:13px}
-  .counter{bottom:92px;width:min(640px,86vw)}
-  .sign{bottom:172px}
+  body{overflow:auto}
+  .wrap{min-height:1180px;overflow:visible}
+  #stage{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100vw;
+    height:720px;
+  }
+  header{padding-top:12px}
+  h1{font-size:32px}
+  .sub{font-size:13px}
+  .speech{
+    left:14px;
+    right:14px;
+    top:86px;
+    width:auto;
+    min-height:78px;
+    font-size:13px;
+    padding:11px 13px;
+  }
+  .floor{
+    bottom:auto;
+    top:560px;
+    height:200px;
+  }
+  .counter{
+    bottom:auto;
+    top:532px;
+    width:min(560px,86vw);
+    height:86px;
+  }
+  .sign{
+    bottom:auto;
+    top:484px;
+    min-width:190px;
+    padding:8px 14px;
+    font-size:22px;
+  }
+  .panel{
+    position:relative;
+    left:auto;
+    top:auto;
+    width:calc(100% - 20px);
+    max-height:none;
+    margin:740px auto 16px;
+  }
+}
+
+@media(max-width:520px){
+  .wrap{min-height:1220px}
+  #stage{height:690px}
+  .speech{top:82px}
+  .floor{top:535px}
+  .counter{top:510px}
+  .sign{top:462px}
+  .panel{margin-top:710px}
+  .btns{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D パラメータ調査・モーション確認 v0.4</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D パラメータ調査・モーション確認 v0.4a</div></header>
 <canvas id="stage"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
 
-<div class="speech"><small>はちまん</small><span id="speechText">動きの確認をしますのです。ボタンを押してみてほしいのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">スマホ表示補正版なのです。表示位置を上に調整したのです。</span></div>
 
 <section class="panel">
   <h2>動作確認パネル</h2>
@@ -195,11 +249,6 @@ function setP(words,value){
   if(p) setParamValue(p.id,value,p.index);
 }
 
-function addP(words,value){
-  const p=findParam(words);
-  if(p) setParamValue(p.id,getParamValue(p.id,p.index)+value,p.index);
-}
-
 function refreshOutputs(){
   params.forEach(p=>{
     const out=document.getElementById("out_"+p.safe);
@@ -248,12 +297,22 @@ function resetParams(){
 
 function placeModel(){
   if(!model || !app)return;
+
   const w=app.renderer.width;
   const h=app.renderer.height;
-  const scale=Math.min(w/900,h/900)*baseScale;
-  model.scale.set(scale);
-  model.x=w*0.5;
-  model.y=h*0.80;
+  const isMobile=w<=700;
+
+  if(isMobile){
+    const scale=Math.min(Math.max(w/420,0.82),1.12)*0.24;
+    model.scale.set(scale);
+    model.x=w*0.5;
+    model.y=Math.min(520, h*0.62);
+  }else{
+    const scale=Math.min(w/900,h/900)*baseScale;
+    model.scale.set(scale);
+    model.x=w*0.5;
+    model.y=h*0.80;
+  }
 }
 
 function stopAnim(reset=true){
@@ -317,7 +376,9 @@ function animate(){
     setP(["body","angle","y"],bounce*10);
     setP(["angle","y"],bounce*7);
     if(model){
-      model.y=(app.renderer.height*0.80)-(bounce*38);
+      const isMobile=app.renderer.width<=700;
+      const baseY=isMobile?Math.min(520,app.renderer.height*0.62):app.renderer.height*0.80;
+      model.y=baseY-(bounce*(isMobile?24:38));
       model.scale.y=model.scale.x*(1+bounce*0.08);
     }
     if(t>1.5){
@@ -362,7 +423,7 @@ async function init(){
 
     window.addEventListener("resize",placeModel);
     setStatus("読み込み成功。パラメータ "+params.length+" 件を取得しました。");
-    speechText.textContent="表示成功なのです。動きの確認を始められますのです。";
+    speechText.textContent="表示成功なのです。スマホでも見えるように調整したのです。";
   }catch(error){
     console.error(error);
     setStatus("読み込み失敗："+error.message);
