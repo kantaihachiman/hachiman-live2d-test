@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D スマホ最適配置 v0.6</title>
+<title>はちまん Live2D スマホ小型・下寄せ配置 v0.6a</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:linear-gradient(180deg,#251714,#56321f 55%,#9b6517)}
@@ -48,11 +48,11 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ最適配置 v0.6</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ小型・下寄せ配置 v0.6a</div></header>
 <canvas id="stage"></canvas>
 <canvas id="overlay"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
-<div class="speech"><small>はちまん</small><span id="speechText">スマホ最適配置の確認なのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">スマホ小型・下寄せ配置の確認なのです。</span></div>
 
 <section class="panel" id="panel">
 <h2>原点・実寸計測</h2>
@@ -71,7 +71,7 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 <div class="control"><b>anchor.x</b><div class="row"><input id="axRange" type="range" min="-2" max="2" step="0.01"><output id="axOut">0</output></div></div>
 <div class="control"><b>anchor.y</b><div class="row"><input id="ayRange" type="range" min="-2" max="2" step="0.01"><output id="ayOut">0</output></div></div>
 </div>
-<div class="note">v0.6では、PCは scale 0.26、スマホは scale 0.08 を基準にしています。赤枠と青十字で確認できます。</div>
+<div class="note">v0.6aでは、PCは scale 0.26、スマホは scale 0.05 を基準にしています。赤枠と青十字で確認できます。</div>
 </section>
 
 <div class="mobileBar">
@@ -113,7 +113,7 @@ function applyFit(){
 function centerModel(){if(!model||!app)return;model.x=app.renderer.width*0.5;model.y=app.renderer.height*0.55;measureAndDraw()}
 function bindControls(){xRange.addEventListener("input",()=>{model.x=Number(xRange.value);measureAndDraw()});yRange.addEventListener("input",()=>{model.y=Number(yRange.value);measureAndDraw()});sRange.addEventListener("input",()=>{model.scale.set(Number(sRange.value));measureAndDraw()});axRange.addEventListener("input",()=>{if(model.anchor)model.anchor.x=Number(axRange.value);measureAndDraw()});ayRange.addEventListener("input",()=>{if(model.anchor)model.anchor.y=Number(ayRange.value);measureAndDraw()})}
 async function init(){
- try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。v0.6 最適配置を確認できます。");speechText.textContent="読み込み成功なのです。スマホ配置を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();applyFit()});setInterval(measureAndDraw,500)}
+ try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。v0.6a 小型・下寄せ配置を確認できます。");speechText.textContent="読み込み成功なのです。スマホ小型・下寄せ配置を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();applyFit()});setInterval(measureAndDraw,500)}
  catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
 }
 document.getElementById("measureBtn").onclick=measureAndDraw;document.getElementById("toggleBoxBtn").onclick=()=>{showBox=!showBox;measureAndDraw()};document.getElementById("centerBtn").onclick=centerModel;document.getElementById("fitBtn").onclick=applyFit;document.getElementById("smallBtn").onclick=()=>{if(model){model.scale.set(Math.max(.005,model.scale.x-.01));measureAndDraw()}};document.getElementById("bigBtn").onclick=()=>{if(model){model.scale.set(model.scale.x+.01);measureAndDraw()}};
