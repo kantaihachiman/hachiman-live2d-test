@@ -3,96 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D スマホ表示 v0.4e</title>
+<title>はちまん Live2D 原点・実寸計測 v0.5</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:linear-gradient(180deg,#251714,#56321f 55%,#9b6517)}
 .wrap{position:relative;width:100vw;height:100vh;overflow:hidden}
-#stage{position:absolute;inset:0;z-index:3;width:100vw;height:100vh}
-header{position:absolute;z-index:8;left:0;right:0;top:0;text-align:center;padding:14px;pointer-events:none}
-h1{margin:0;font-size:clamp(28px,5vw,52px);letter-spacing:.08em;text-shadow:3px 3px 0 #3b2015}
-.sub{font-weight:900;margin-top:6px}
-.speech{position:absolute;z-index:10;right:24px;top:112px;width:min(400px,36vw);padding:14px 16px;color:#3f2a1e;background:#fff9e8;border:4px solid #4d2a1a;border-radius:18px;box-shadow:6px 6px 0 rgba(0,0,0,.18);font-weight:900;line-height:1.55}
+#stage{position:absolute;inset:0;width:100vw;height:100vh;z-index:3}
+#overlay{position:absolute;inset:0;width:100vw;height:100vh;z-index:4;pointer-events:none}
+header{position:absolute;z-index:8;left:0;right:0;top:0;text-align:center;padding:12px;pointer-events:none}
+h1{margin:0;font-size:clamp(26px,5vw,52px);letter-spacing:.08em;text-shadow:3px 3px 0 #3b2015}
+.sub{font-weight:900;margin-top:4px}
+.speech{position:absolute;z-index:10;right:24px;top:105px;width:min(430px,36vw);padding:12px 15px;color:#3f2a1e;background:#fff9e8;border:4px solid #4d2a1a;border-radius:18px;box-shadow:6px 6px 0 rgba(0,0,0,.18);font-weight:900;line-height:1.55}
 .speech small{display:block;color:#7a5b42;margin-bottom:4px}
 .floor{position:absolute;z-index:1;left:-10%;right:-10%;bottom:-78px;height:260px;background:repeating-linear-gradient(90deg,#b87938 0 70px,#a86931 70px 76px),linear-gradient(#c48d4f,#8f572b);transform:perspective(520px) rotateX(58deg);transform-origin:bottom;border-top:5px solid #4d2a1a}
 .counter{position:absolute;z-index:2;left:50%;bottom:44px;transform:translateX(-50%);width:min(680px,70vw);height:104px;border:5px solid #3b2015;border-radius:18px 18px 8px 8px;background:linear-gradient(180deg,#f1c36a 0 25%,#a85f31 25% 100%);box-shadow:0 12px 0 rgba(52,27,17,.45)}
 .sign{position:absolute;z-index:6;left:50%;bottom:125px;transform:translateX(-50%);padding:9px 20px;min-width:220px;text-align:center;color:#3f2a1e;border:4px solid #4d2a1a;background:#fff4d8;font-size:clamp(19px,3.4vw,30px);font-weight:900;letter-spacing:.08em;box-shadow:5px 5px 0 rgba(0,0,0,.18)}
-.panel{position:absolute;z-index:20;left:14px;top:112px;width:360px;max-height:calc(100vh - 132px);overflow:auto;padding:12px;color:#3f2a1e;background:rgba(255,249,232,.96);border:4px solid #4d2a1a;border-radius:16px;box-shadow:7px 7px 0 rgba(0,0,0,.22)}
+.panel{position:absolute;z-index:30;left:14px;top:105px;width:390px;max-height:calc(100vh - 122px);overflow:auto;padding:12px;color:#3f2a1e;background:rgba(255,249,232,.97);border:4px solid #4d2a1a;border-radius:16px;box-shadow:7px 7px 0 rgba(0,0,0,.22)}
 .panel h2{margin:0 0 8px;font-size:18px;color:#9f2f26}
-.status{padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fff4d8;font-weight:900;line-height:1.45;margin-bottom:10px}
-.status small{display:block;color:#7a5b42;word-break:break-all}
+.status,.measure{padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fff4d8;font-weight:900;line-height:1.45;margin-bottom:10px}
+.status small,.measure small{display:block;color:#7a5b42;word-break:break-all}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
 button{padding:9px 10px;color:#fff7df;background:#9f2f26;border:3px solid #4d2a1a;border-radius:10px;box-shadow:0 3px 0 #5c2219;font-family:inherit;font-weight:900;cursor:pointer}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 #5c2219}
 button.subbtn{background:#3f735d;box-shadow:0 3px 0 #254537}
-.paramTools input{width:100%;padding:7px;border:2px solid #7a4a2c;border-radius:8px;background:white;font-weight:800}
-.param{padding:8px;margin:7px 0;border:2px solid #7a4a2c;border-radius:10px;background:#fffdf3}
-.param b{display:block;font-size:12px;color:#3f2a1e;word-break:break-all}
-.param .row{display:grid;grid-template-columns:1fr 54px;gap:8px;align-items:center;margin-top:6px}
-.param input[type=range]{width:100%}.param output{font-size:12px;text-align:right;font-weight:900}.hide{display:none}
+.sliders{display:grid;gap:8px;margin-bottom:10px}
+.control{padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fffdf3}
+.control b{display:block;font-size:13px;margin-bottom:5px}
+.control .row{display:grid;grid-template-columns:1fr 58px;gap:8px;align-items:center}
+.control input[type=range]{width:100%}
+.control output{text-align:right;font-size:12px;font-weight:900}
+.note{font-size:12px;line-height:1.5;color:#6b4b35;font-weight:800}
 .mobileBar{display:none}
 @media(max-width:900px){
- body{overflow:hidden}.wrap{height:100vh;min-height:100vh}
- header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
- .speech{left:12px;right:12px;top:74px;width:auto;min-height:60px;font-size:12px;padding:9px 11px}
- .floor{bottom:18px;height:185px}.counter{bottom:70px;width:min(520px,86vw);height:80px}.sign{bottom:138px;min-width:180px;font-size:20px;padding:7px 12px}
- .panel{display:none;position:fixed;z-index:50;left:10px;right:10px;top:92px;width:auto;max-height:calc(100vh - 150px);overflow:auto}
- .panel.open{display:block}
- .mobileBar{display:flex;position:fixed;z-index:60;left:8px;right:8px;bottom:8px;gap:6px}
- .mobileBar button{flex:1;padding:8px 6px;font-size:12px}
+body{overflow:hidden}.wrap{height:100vh;min-height:100vh}
+header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
+.speech{left:12px;right:12px;top:72px;width:auto;min-height:58px;font-size:12px;padding:9px 11px}
+.floor{bottom:18px;height:185px}.counter{bottom:70px;width:min(520px,86vw);height:80px}.sign{bottom:138px;min-width:180px;font-size:20px;padding:7px 12px}
+.panel{display:none;position:fixed;z-index:50;left:10px;right:10px;top:90px;width:auto;max-height:calc(100vh - 150px);overflow:auto}
+.panel.open{display:block}
+.mobileBar{display:flex;position:fixed;z-index:60;left:8px;right:8px;bottom:8px;gap:6px}
+.mobileBar button{flex:1;padding:8px 6px;font-size:12px}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ正常表示 v0.4e</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D 原点・実寸計測 v0.5</div></header>
 <canvas id="stage"></canvas>
+<canvas id="overlay"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
-<div class="speech"><small>はちまん</small><span id="speechText">スマホ初期表示を左寄せ・小さめにしたのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">赤枠と青十字で、表示範囲と原点を確認するのです。</span></div>
+
 <section class="panel" id="panel">
-<h2>動作確認パネル</h2>
+<h2>原点・実寸計測</h2>
 <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
+<div class="measure" id="measure">計測待ち……</div>
 <div class="btns">
-<button id="idleBtn" class="subbtn">待機ゆれ</button><button id="stopBtn">停止</button>
-<button id="bowBtn">おじぎ</button><button id="waveBtn">手をふる</button>
-<button id="swayBtn">左右ゆれ</button><button id="jumpBtn">ぴょこ</button>
-<button id="breathBtn">呼吸強め</button><button id="resetParamBtn">初期化</button>
+<button id="measureBtn" class="subbtn">再計測</button><button id="toggleBoxBtn">赤枠ON/OFF</button>
+<button id="centerBtn">画面中央</button><button id="fitBtn">スマホ仮フィット</button>
 <button id="smallBtn">小さく</button><button id="bigBtn">大きく</button>
 </div>
-<h2>パラメータ一覧</h2>
-<div class="paramTools"><input id="filter" placeholder="例：Arm / Body / Breath / Angle"></div>
-<div id="paramList"></div>
+<h2>手動位置調整</h2>
+<div class="sliders">
+<div class="control"><b>model.x</b><div class="row"><input id="xRange" type="range" min="-1200" max="1200" step="1"><output id="xOut">0</output></div></div>
+<div class="control"><b>model.y</b><div class="row"><input id="yRange" type="range" min="-1200" max="1600" step="1"><output id="yOut">0</output></div></div>
+<div class="control"><b>scale</b><div class="row"><input id="sRange" type="range" min="0.005" max="1.000" step="0.005"><output id="sOut">0</output></div></div>
+<div class="control"><b>anchor.x</b><div class="row"><input id="axRange" type="range" min="-2" max="2" step="0.01"><output id="axOut">0</output></div></div>
+<div class="control"><b>anchor.y</b><div class="row"><input id="ayRange" type="range" min="-2" max="2" step="0.01"><output id="ayOut">0</output></div></div>
+</div>
+<div class="note">赤枠＝Live2Dの実際の表示範囲。青十字＝model.x / model.y の原点。スマホで見切れる場合、この画面で x/y/scale/anchor を動かして、見える値を探します。</div>
 </section>
+
 <div class="mobileBar">
-<button id="mobilePanelBtn">調査パネル</button>
-<button id="mobileJumpBtn">ぴょこ</button>
-<button id="mobileIdleBtn">待機ゆれ</button>
+<button id="mobilePanelBtn">計測パネル</button>
+<button id="mobileFitBtn">仮フィット</button>
+<button id="mobileBoxBtn">赤枠</button>
 </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
 <script>
 const MODEL_PATH="export/hachiman.model3.json";
-const statusEl=document.getElementById("status"),speechText=document.getElementById("speechText"),canvas=document.getElementById("stage"),paramListEl=document.getElementById("paramList"),filterEl=document.getElementById("filter"),panel=document.getElementById("panel");
-let app=null,model=null,core=null,baseScale=0.26,params=[],defaultValues={},activeAnim=null;
+const canvas=document.getElementById("stage"),overlay=document.getElementById("overlay"),statusEl=document.getElementById("status"),measureEl=document.getElementById("measure"),speechText=document.getElementById("speechText"),panel=document.getElementById("panel");
+const xRange=document.getElementById("xRange"),yRange=document.getElementById("yRange"),sRange=document.getElementById("sRange"),axRange=document.getElementById("axRange"),ayRange=document.getElementById("ayRange");
+const xOut=document.getElementById("xOut"),yOut=document.getElementById("yOut"),sOut=document.getElementById("sOut"),axOut=document.getElementById("axOut"),ayOut=document.getElementById("ayOut");
+let app=null,model=null,showBox=true;
 function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
 function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
-function ids(x){if(x==null)return"";if(typeof x==="string")return x;if(x.s)return x.s;if(x.id)return x.id;if(x._id)return x._id;if(x.toString)return x.toString();return String(x)}
-function collect(){core=model&&model.internalModel&&model.internalModel.coreModel;const out=[];try{if(core&&core.getParameterCount&&core.getParameterId){for(let i=0;i<core.getParameterCount();i++)out.push({index:i,id:ids(core.getParameterId(i))})}}catch(e){};return out.filter(p=>p.id)}
-function getV(id,i){try{if(core&&core.getParameterValueById)return Number(core.getParameterValueById(id))}catch(e){}try{if(core&&core.getParameterValue)return Number(core.getParameterValue(i))}catch(e){}return 0}
-function setV(id,v,i){v=Number(v);try{if(core&&core.setParameterValueById){core.setParameterValueById(id,v);return}}catch(e){}try{if(core&&core.setParameterValue){core.setParameterValue(i,v);return}}catch(e){}}
-function findP(words){const ws=words.map(w=>w.toLowerCase());return params.find(p=>ws.every(w=>p.id.toLowerCase().includes(w)))}
-function setP(words,v){const p=findP(words);if(p)setV(p.id,v,p.index)}
-function refresh(){params.forEach(p=>{const o=document.getElementById("out_"+p.safe),r=document.getElementById("range_"+p.safe);if(o&&r){const v=getV(p.id,p.index);o.value=v.toFixed(2);r.value=Math.max(-30,Math.min(30,v))}})}
-function render(){const q=filterEl.value.trim().toLowerCase();paramListEl.innerHTML=params.map(p=>{const vis=!q||p.id.toLowerCase().includes(q),v=getV(p.id,p.index);return `<div class="param ${vis?'':'hide'}"><b>${p.id}</b><div class="row"><input id="range_${p.safe}" type="range" min="-30" max="30" step="0.1" value="${v}"><output id="out_${p.safe}">${v.toFixed(2)}</output></div></div>`}).join("");params.forEach(p=>{const r=document.getElementById("range_"+p.safe),o=document.getElementById("out_"+p.safe);if(r)r.addEventListener("input",()=>{stopAnim(false);setV(p.id,r.value,p.index);o.value=Number(r.value).toFixed(2)})})}
-function reset(){params.forEach(p=>{if(defaultValues[p.id]!=null)setV(p.id,defaultValues[p.id],p.index)});refresh()}
-function place(){if(!model||!app)return;const w=app.renderer.width,h=app.renderer.height,m=w<=700;if(m){const sc=Math.min(Math.max(w/390,.86),1.15)*.070;model.scale.set(sc);model.x=w*.22;model.y=h*.70}else{const sc=Math.min(w/900,h/900)*baseScale;model.scale.set(sc);model.x=w*.5;model.y=h*.80}}
-function stopAnim(r=true){activeAnim=null;if(r)reset();speechText.textContent="停止しましたのです。"}
-function startAnim(n){activeAnim={name:n,start:performance.now()};speechText.textContent={idle:"待機ゆれ確認中なのです。",bow:"おじぎ確認中なのです。",wave:"手をふる確認中なのです。",sway:"左右ゆれ確認中なのです。",jump:"ぴょこ確認中なのです。",breath:"呼吸強め確認中なのです。"}[n]||"確認中なのです。"}
-function anim(){requestAnimationFrame(anim);if(!activeAnim)return;const t=(performance.now()-activeAnim.start)/1000;reset();if(activeAnim.name==="idle"){setP(["breath"],Math.sin(t*2.2)*.7);setP(["body","angle","z"],Math.sin(t*1.4)*3);setP(["angle","z"],Math.sin(t*1.2)*2)}if(activeAnim.name==="jump"){const b=Math.max(0,Math.sin(t*7));setP(["breath"],b*2);setP(["body","angle","y"],b*10);setP(["angle","y"],b*7);if(model){const by=(app.renderer.width<=700)?app.renderer.height*.70:app.renderer.height*.8;model.y=by-b*((app.renderer.width<=700)?12:38);model.scale.y=model.scale.x*(1+b*.08)}if(t>1.5){if(model)model.scale.y=model.scale.x;place();stopAnim(true)}}if(activeAnim.name==="bow"){const v=Math.sin(Math.min(1,t/1.2)*Math.PI)*18;setP(["angle","y"],-v);setP(["body","angle","x"],v*.35);if(t>1.35)stopAnim(true)}if(activeAnim.name==="wave"){setP(["arm","r"],Math.sin(t*10)*24);setP(["arm","right"],Math.sin(t*10)*24);setP(["body","angle","z"],Math.sin(t*5)*4);if(t>2.4)stopAnim(true)}if(activeAnim.name==="sway"){setP(["body","angle","x"],Math.sin(t*3.2)*12);setP(["angle","x"],Math.sin(t*3.2)*10)}if(activeAnim.name==="breath"){setP(["breath"],Math.sin(t*4)*1.8);setP(["body","angle","y"],Math.sin(t*4)*4)}refresh()}
-async function init(){try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(.5,.92);place();params=collect().map((p,i)=>({...p,safe:"p"+i+"_"+p.id.replace(/[^a-zA-Z0-9_-]/g,"_")}));params.forEach(p=>defaultValues[p.id]=getV(p.id,p.index));render();anim();window.addEventListener("resize",place);setStatus("読み込み成功。パラメータ "+params.length+" 件を取得しました。");speechText.textContent="表示成功なのです。スマホではパネルを閉じて表示するのです。"}catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}}
-filterEl.addEventListener("input",render);
-document.getElementById("idleBtn").onclick=()=>startAnim("idle");document.getElementById("stopBtn").onclick=()=>stopAnim(true);document.getElementById("bowBtn").onclick=()=>startAnim("bow");document.getElementById("waveBtn").onclick=()=>startAnim("wave");document.getElementById("swayBtn").onclick=()=>startAnim("sway");document.getElementById("jumpBtn").onclick=()=>startAnim("jump");document.getElementById("breathBtn").onclick=()=>startAnim("breath");document.getElementById("resetParamBtn").onclick=()=>{stopAnim(true);speechText.textContent="初期化しましたのです。"};document.getElementById("smallBtn").onclick=()=>{baseScale=Math.max(.12,baseScale-.04);place()};document.getElementById("bigBtn").onclick=()=>{baseScale=Math.min(.7,baseScale+.04);place()};document.getElementById("mobilePanelBtn").onclick=()=>panel.classList.toggle("open");document.getElementById("mobileJumpBtn").onclick=()=>startAnim("jump");document.getElementById("mobileIdleBtn").onclick=()=>startAnim("idle");
+function resizeOverlay(){const dpr=window.devicePixelRatio||1;overlay.width=Math.floor(window.innerWidth*dpr);overlay.height=Math.floor(window.innerHeight*dpr);overlay.style.width=window.innerWidth+"px";overlay.style.height=window.innerHeight+"px";overlay.getContext("2d").setTransform(dpr,0,0,dpr,0,0)}
+function updateControls(){if(!model)return;xRange.value=model.x;yRange.value=model.y;sRange.value=model.scale.x;xOut.value=Math.round(model.x);yOut.value=Math.round(model.y);sOut.value=model.scale.x.toFixed(3);if(model.anchor){axRange.value=model.anchor.x;ayRange.value=model.anchor.y;axOut.value=model.anchor.x.toFixed(2);ayOut.value=model.anchor.y.toFixed(2)}}
+function measureAndDraw(){
+ if(!model||!app)return;
+ resizeOverlay();
+ const ctx=overlay.getContext("2d");ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+ let b=null;try{b=model.getBounds()}catch(e){}
+ const info=[];info.push("画面： "+Math.round(app.renderer.width)+" × "+Math.round(app.renderer.height));info.push("model.x / y： "+Math.round(model.x)+" / "+Math.round(model.y));info.push("scale： "+model.scale.x.toFixed(4));if(model.anchor)info.push("anchor： "+model.anchor.x.toFixed(2)+" / "+model.anchor.y.toFixed(2));
+ if(b){info.push("bounds.x / y： "+Math.round(b.x)+" / "+Math.round(b.y));info.push("bounds.w / h： "+Math.round(b.width)+" / "+Math.round(b.height));info.push("bounds右端： "+Math.round(b.x+b.width));info.push("bounds下端： "+Math.round(b.y+b.height));if(showBox){ctx.save();ctx.lineWidth=3;ctx.strokeStyle="rgba(255,40,40,.95)";ctx.fillStyle="rgba(255,40,40,.08)";ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeRect(b.x,b.y,b.width,b.height);ctx.restore()}}else{info.push("bounds：取得失敗")}
+ ctx.save();ctx.strokeStyle="rgba(60,160,255,.95)";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(model.x-24,model.y);ctx.lineTo(model.x+24,model.y);ctx.moveTo(model.x,model.y-24);ctx.lineTo(model.x,model.y+24);ctx.stroke();ctx.fillStyle="rgba(60,160,255,.95)";ctx.font="bold 13px sans-serif";ctx.fillText("origin",model.x+8,model.y-8);ctx.restore();
+ measureEl.innerHTML=info.map(x=>"<small>"+x+"</small>").join("");updateControls();
+}
+function applyFit(){
+ if(!model||!app)return;const w=app.renderer.width,h=app.renderer.height,isMobile=w<=700;
+ if(isMobile){model.scale.set(0.035);model.x=w*0.04;model.y=h*0.50;if(model.anchor)model.anchor.set(0.5,0.92)}
+ else{model.scale.set(0.26);model.x=w*0.5;model.y=h*0.80;if(model.anchor)model.anchor.set(0.5,0.92)}
+ speechText.textContent="仮フィットしましたのです。赤枠を見て位置を確認してほしいのです。";measureAndDraw();
+}
+function centerModel(){if(!model||!app)return;model.x=app.renderer.width*0.5;model.y=app.renderer.height*0.55;measureAndDraw()}
+function bindControls(){xRange.addEventListener("input",()=>{model.x=Number(xRange.value);measureAndDraw()});yRange.addEventListener("input",()=>{model.y=Number(yRange.value);measureAndDraw()});sRange.addEventListener("input",()=>{model.scale.set(Number(sRange.value));measureAndDraw()});axRange.addEventListener("input",()=>{if(model.anchor)model.anchor.x=Number(axRange.value);measureAndDraw()});ayRange.addEventListener("input",()=>{if(model.anchor)model.anchor.y=Number(ayRange.value);measureAndDraw()})}
+async function init(){
+ try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。原点と実寸を計測できます。");speechText.textContent="読み込み成功なのです。赤枠と青十字を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();measureAndDraw()});setInterval(measureAndDraw,500)}
+ catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
+}
+document.getElementById("measureBtn").onclick=measureAndDraw;document.getElementById("toggleBoxBtn").onclick=()=>{showBox=!showBox;measureAndDraw()};document.getElementById("centerBtn").onclick=centerModel;document.getElementById("fitBtn").onclick=applyFit;document.getElementById("smallBtn").onclick=()=>{if(model){model.scale.set(Math.max(.005,model.scale.x-.01));measureAndDraw()}};document.getElementById("bigBtn").onclick=()=>{if(model){model.scale.set(model.scale.x+.01);measureAndDraw()}};
+document.getElementById("mobilePanelBtn").onclick=()=>panel.classList.toggle("open");document.getElementById("mobileFitBtn").onclick=applyFit;document.getElementById("mobileBoxBtn").onclick=()=>{showBox=!showBox;measureAndDraw()};
 init();
 </script>
 </body>
