@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2Dポータル v0.7</title>
+<title>艦隊八幡社 Live2Dポータル v0.7a</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -115,7 +115,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
     left:14px;right:14px;top:94px;width:auto;min-height:70px;
     padding:10px 12px;font-size:13px;line-height:1.55;
   }
-  .counter{height:82px;width:94vw;bottom:54px;border-radius:18px 18px 0 0}
+  .counter{height:82px;width:72vw;left:42%;bottom:30px;border-radius:18px 18px 0 0}
   .floor{bottom:-80px;height:210px}
   .portalCards{
     bottom:68px;width:92vw;grid-template-columns:repeat(3,1fr);gap:7px;z-index:14;
@@ -127,9 +127,22 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   .card .desc{display:none}
   .motionPanel{display:none}
   .mobileBar{
-    display:flex;position:fixed;z-index:60;left:8px;right:8px;bottom:8px;gap:6px;
+    display:flex;
+    position:fixed;
+    z-index:60;
+    right:10px;
+    bottom:18px;
+    width:96px;
+    flex-direction:column;
+    gap:7px;
   }
-  .mobileBar button{flex:1;padding:9px 6px;font-size:12px}
+  .mobileBar button{
+    flex:none;
+    width:96px;
+    padding:9px 6px;
+    font-size:12px;
+    border-radius:12px;
+  }
   .debugPanel{
     left:10px;right:10px;top:92px;width:auto;max-height:calc(100vh - 150px);
   }
@@ -141,7 +154,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   <div class="wallPattern"></div>
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="subtitle">Live2D ポータル試作 v0.7</div>
+    <div class="subtitle">Live2D ポータル試作 v0.7a</div>
   </header>
 
   <canvas id="stage"></canvas>
@@ -149,7 +162,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
 
   <div class="speech">
     <small>はちまん</small>
-    <span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span>
+    <span id="speechText">いらっしゃいませなのです。右の札から案内を選べるのです。</span>
   </div>
 
   <div class="portalCards">
@@ -230,7 +243,7 @@ function placeModel(){
   const w=app.renderer.width,h=app.renderer.height;
   if(isMobile()){
     model.scale.set(0.050);
-    model.x=210;
+    model.x=185;
     model.y=500;
   }else{
     model.scale.set(0.220);
@@ -327,8 +340,8 @@ async function init(){
     params.forEach(p=>defaults[p.id]=getV(p.id,p.index));
     placeModel();
     animate();
-    setStatus("読み込み成功。v0.7 ポータル表示中です。");
-    speechText.textContent="いらっしゃいませなのです。艦隊八幡社の入口なのです。";
+    setStatus("読み込み成功。v0.7a ポータル表示中です。");
+    speechText.textContent="いらっしゃいませなのです。右の札から案内を選べるのです。";
     window.addEventListener("resize",placeModel);
   }catch(e){
     console.error(e);
