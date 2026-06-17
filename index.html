@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D 原点・実寸計測 v0.5</title>
+<title>はちまん Live2D スマホ最適配置 v0.6</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:linear-gradient(180deg,#251714,#56321f 55%,#9b6517)}
@@ -48,11 +48,11 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D 原点・実寸計測 v0.5</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ最適配置 v0.6</div></header>
 <canvas id="stage"></canvas>
 <canvas id="overlay"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
-<div class="speech"><small>はちまん</small><span id="speechText">赤枠と青十字で、表示範囲と原点を確認するのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">スマホ最適配置の確認なのです。</span></div>
 
 <section class="panel" id="panel">
 <h2>原点・実寸計測</h2>
@@ -60,7 +60,7 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 <div class="measure" id="measure">計測待ち……</div>
 <div class="btns">
 <button id="measureBtn" class="subbtn">再計測</button><button id="toggleBoxBtn">赤枠ON/OFF</button>
-<button id="centerBtn">画面中央</button><button id="fitBtn">スマホ仮フィット</button>
+<button id="centerBtn">画面中央</button><button id="fitBtn">最適配置</button>
 <button id="smallBtn">小さく</button><button id="bigBtn">大きく</button>
 </div>
 <h2>手動位置調整</h2>
@@ -71,12 +71,12 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 <div class="control"><b>anchor.x</b><div class="row"><input id="axRange" type="range" min="-2" max="2" step="0.01"><output id="axOut">0</output></div></div>
 <div class="control"><b>anchor.y</b><div class="row"><input id="ayRange" type="range" min="-2" max="2" step="0.01"><output id="ayOut">0</output></div></div>
 </div>
-<div class="note">赤枠＝Live2Dの実際の表示範囲。青十字＝model.x / model.y の原点。スマホで見切れる場合、この画面で x/y/scale/anchor を動かして、見える値を探します。</div>
+<div class="note">v0.6では、PCは scale 0.26、スマホは scale 0.08 を基準にしています。赤枠と青十字で確認できます。</div>
 </section>
 
 <div class="mobileBar">
 <button id="mobilePanelBtn">計測パネル</button>
-<button id="mobileFitBtn">仮フィット</button>
+<button id="mobileFitBtn">最適配置</button>
 <button id="mobileBoxBtn">赤枠</button>
 </div>
 </div>
@@ -89,7 +89,7 @@ const MODEL_PATH="export/hachiman.model3.json";
 const canvas=document.getElementById("stage"),overlay=document.getElementById("overlay"),statusEl=document.getElementById("status"),measureEl=document.getElementById("measure"),speechText=document.getElementById("speechText"),panel=document.getElementById("panel");
 const xRange=document.getElementById("xRange"),yRange=document.getElementById("yRange"),sRange=document.getElementById("sRange"),axRange=document.getElementById("axRange"),ayRange=document.getElementById("ayRange");
 const xOut=document.getElementById("xOut"),yOut=document.getElementById("yOut"),sOut=document.getElementById("sOut"),axOut=document.getElementById("axOut"),ayOut=document.getElementById("ayOut");
-let app=null,model=null,showBox=true;
+let app=null,model=null,showBox=false;
 function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
 function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
 function resizeOverlay(){const dpr=window.devicePixelRatio||1;overlay.width=Math.floor(window.innerWidth*dpr);overlay.height=Math.floor(window.innerHeight*dpr);overlay.style.width=window.innerWidth+"px";overlay.style.height=window.innerHeight+"px";overlay.getContext("2d").setTransform(dpr,0,0,dpr,0,0)}
@@ -108,12 +108,12 @@ function applyFit(){
  if(!model||!app)return;const w=app.renderer.width,h=app.renderer.height,isMobile=w<=700;
  if(isMobile){model.scale.set(0.035);model.x=w*0.04;model.y=h*0.50;if(model.anchor)model.anchor.set(0.5,0.92)}
  else{model.scale.set(0.26);model.x=w*0.5;model.y=h*0.80;if(model.anchor)model.anchor.set(0.5,0.92)}
- speechText.textContent="仮フィットしましたのです。赤枠を見て位置を確認してほしいのです。";measureAndDraw();
+ speechText.textContent="最適配置しましたのです。赤枠を見て位置を確認してほしいのです。";measureAndDraw();
 }
 function centerModel(){if(!model||!app)return;model.x=app.renderer.width*0.5;model.y=app.renderer.height*0.55;measureAndDraw()}
 function bindControls(){xRange.addEventListener("input",()=>{model.x=Number(xRange.value);measureAndDraw()});yRange.addEventListener("input",()=>{model.y=Number(yRange.value);measureAndDraw()});sRange.addEventListener("input",()=>{model.scale.set(Number(sRange.value));measureAndDraw()});axRange.addEventListener("input",()=>{if(model.anchor)model.anchor.x=Number(axRange.value);measureAndDraw()});ayRange.addEventListener("input",()=>{if(model.anchor)model.anchor.y=Number(ayRange.value);measureAndDraw()})}
 async function init(){
- try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。原点と実寸を計測できます。");speechText.textContent="読み込み成功なのです。赤枠と青十字を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();measureAndDraw()});setInterval(measureAndDraw,500)}
+ try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。v0.6 最適配置を確認できます。");speechText.textContent="読み込み成功なのです。スマホ配置を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();applyFit()});setInterval(measureAndDraw,500)}
  catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
 }
 document.getElementById("measureBtn").onclick=measureAndDraw;document.getElementById("toggleBoxBtn").onclick=()=>{showBox=!showBox;measureAndDraw()};document.getElementById("centerBtn").onclick=centerModel;document.getElementById("fitBtn").onclick=applyFit;document.getElementById("smallBtn").onclick=()=>{if(model){model.scale.set(Math.max(.005,model.scale.x-.01));measureAndDraw()}};document.getElementById("bigBtn").onclick=()=>{if(model){model.scale.set(model.scale.x+.01);measureAndDraw()}};
