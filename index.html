@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D スマホ小型・下寄せ配置 v0.6a</title>
+<title>はちまん Live2D スマホ判定修正版 v0.6b</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:linear-gradient(180deg,#251714,#56321f 55%,#9b6517)}
@@ -48,11 +48,11 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ小型・下寄せ配置 v0.6a</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホ判定修正版 v0.6b</div></header>
 <canvas id="stage"></canvas>
 <canvas id="overlay"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
-<div class="speech"><small>はちまん</small><span id="speechText">スマホ小型・下寄せ配置の確認なのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">スマホ判定修正版の確認なのです。</span></div>
 
 <section class="panel" id="panel">
 <h2>原点・実寸計測</h2>
@@ -71,7 +71,7 @@ header{padding-top:10px}h1{font-size:30px}.sub{font-size:12px}
 <div class="control"><b>anchor.x</b><div class="row"><input id="axRange" type="range" min="-2" max="2" step="0.01"><output id="axOut">0</output></div></div>
 <div class="control"><b>anchor.y</b><div class="row"><input id="ayRange" type="range" min="-2" max="2" step="0.01"><output id="ayOut">0</output></div></div>
 </div>
-<div class="note">v0.6aでは、PCは scale 0.26、スマホは scale 0.05 を基準にしています。赤枠と青十字で確認できます。</div>
+<div class="note">v0.6bでは、PCは scale 0.26、スマホは scale 0.05 を基準にしています。赤枠と青十字で確認できます。</div>
 </section>
 
 <div class="mobileBar">
@@ -99,13 +99,13 @@ function measureAndDraw(){
  resizeOverlay();
  const ctx=overlay.getContext("2d");ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
  let b=null;try{b=model.getBounds()}catch(e){}
- const info=[];info.push("画面： "+Math.round(app.renderer.width)+" × "+Math.round(app.renderer.height));info.push("model.x / y： "+Math.round(model.x)+" / "+Math.round(model.y));info.push("scale： "+model.scale.x.toFixed(4));if(model.anchor)info.push("anchor： "+model.anchor.x.toFixed(2)+" / "+model.anchor.y.toFixed(2));
+ const info=[];info.push("viewport： "+Math.round(window.innerWidth)+" × "+Math.round(window.innerHeight));info.push("renderer： "+Math.round(app.renderer.width)+" × "+Math.round(app.renderer.height));info.push("model.x / y： "+Math.round(model.x)+" / "+Math.round(model.y));info.push("scale： "+model.scale.x.toFixed(4));if(model.anchor)info.push("anchor： "+model.anchor.x.toFixed(2)+" / "+model.anchor.y.toFixed(2));
  if(b){info.push("bounds.x / y： "+Math.round(b.x)+" / "+Math.round(b.y));info.push("bounds.w / h： "+Math.round(b.width)+" / "+Math.round(b.height));info.push("bounds右端： "+Math.round(b.x+b.width));info.push("bounds下端： "+Math.round(b.y+b.height));if(showBox){ctx.save();ctx.lineWidth=3;ctx.strokeStyle="rgba(255,40,40,.95)";ctx.fillStyle="rgba(255,40,40,.08)";ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeRect(b.x,b.y,b.width,b.height);ctx.restore()}}else{info.push("bounds：取得失敗")}
  ctx.save();ctx.strokeStyle="rgba(60,160,255,.95)";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(model.x-24,model.y);ctx.lineTo(model.x+24,model.y);ctx.moveTo(model.x,model.y-24);ctx.lineTo(model.x,model.y+24);ctx.stroke();ctx.fillStyle="rgba(60,160,255,.95)";ctx.font="bold 13px sans-serif";ctx.fillText("origin",model.x+8,model.y-8);ctx.restore();
  measureEl.innerHTML=info.map(x=>"<small>"+x+"</small>").join("");updateControls();
 }
 function applyFit(){
- if(!model||!app)return;const w=app.renderer.width,h=app.renderer.height,isMobile=w<=700;
+ if(!model||!app)return;const w=window.innerWidth,h=window.innerHeight,isMobile=w<=700;
  if(isMobile){model.scale.set(0.035);model.x=w*0.04;model.y=h*0.50;if(model.anchor)model.anchor.set(0.5,0.92)}
  else{model.scale.set(0.26);model.x=w*0.5;model.y=h*0.80;if(model.anchor)model.anchor.set(0.5,0.92)}
  speechText.textContent="最適配置しましたのです。赤枠を見て位置を確認してほしいのです。";measureAndDraw();
@@ -113,7 +113,7 @@ function applyFit(){
 function centerModel(){if(!model||!app)return;model.x=app.renderer.width*0.5;model.y=app.renderer.height*0.55;measureAndDraw()}
 function bindControls(){xRange.addEventListener("input",()=>{model.x=Number(xRange.value);measureAndDraw()});yRange.addEventListener("input",()=>{model.y=Number(yRange.value);measureAndDraw()});sRange.addEventListener("input",()=>{model.scale.set(Number(sRange.value));measureAndDraw()});axRange.addEventListener("input",()=>{if(model.anchor)model.anchor.x=Number(axRange.value);measureAndDraw()});ayRange.addEventListener("input",()=>{if(model.anchor)model.anchor.y=Number(ayRange.value);measureAndDraw()})}
 async function init(){
- try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。v0.6a 小型・下寄せ配置を確認できます。");speechText.textContent="読み込み成功なのです。スマホ小型・下寄せ配置を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();applyFit()});setInterval(measureAndDraw,500)}
+ try{const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");resizeOverlay();app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});setStatus("Live2Dモデルを読み込み中……");model=await C.from(MODEL_PATH,{autoInteract:true});app.stage.addChild(model);if(model.anchor)model.anchor.set(0.5,0.92);applyFit();setStatus("読み込み成功。v0.6b 小型・下寄せ配置を確認できます。");speechText.textContent="読み込み成功なのです。スマホ判定修正版を確認してほしいのです。";bindControls();window.addEventListener("resize",()=>{resizeOverlay();applyFit()});setInterval(measureAndDraw,500)}
  catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
 }
 document.getElementById("measureBtn").onclick=measureAndDraw;document.getElementById("toggleBoxBtn").onclick=()=>{showBox=!showBox;measureAndDraw()};document.getElementById("centerBtn").onclick=centerModel;document.getElementById("fitBtn").onclick=applyFit;document.getElementById("smallBtn").onclick=()=>{if(model){model.scale.set(Math.max(.005,model.scale.x-.01));measureAndDraw()}};document.getElementById("bigBtn").onclick=()=>{if(model){model.scale.set(model.scale.x+.01);measureAndDraw()}};
