@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>はちまん Live2D 表示テスト</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
+    color: #fff7df;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 227, 142, 0.18), transparent 34%),
+      linear-gradient(180deg, #251714 0%, #56321f 55%, #c18b4a 100%);
+  }
+
+  .wrap {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  header {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 18px 16px;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(26px, 5vw, 54px);
+    letter-spacing: .08em;
+    text-shadow: 3px 3px 0 #3b2015;
+  }
+
+  .sub {
+    margin-top: 8px;
+    font-weight: 800;
+    opacity: .9;
+  }
+
+  #stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .floor {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -78px;
+    height: 260px;
+    background:
+      repeating-linear-gradient(90deg, #b87938 0 70px, #a86931 70px 76px),
+      linear-gradient(#c48d4f, #8f572b);
+    transform: perspective(520px) rotateX(58deg);
+    transform-origin: bottom;
+    border-top: 5px solid #4d2a1a;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .counter {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 44px;
+    transform: translateX(-50%);
+    width: min(720px, 86vw);
+    height: 112px;
+    border: 5px solid #3b2015;
+    border-radius: 18px 18px 8px 8px;
+    background: linear-gradient(180deg, #f1c36a 0 25%, #a85f31 25% 100%);
+    box-shadow: 0 12px 0 rgba(52,27,17,.45);
+    pointer-events: none;
+  }
+
+  .sign {
+    position: absolute;
+    z-index: 6;
+    left: 50%;
+    bottom: 132px;
+    transform: translateX(-50%);
+    padding: 10px 22px;
+    min-width: 240px;
+    text-align: center;
+    color: #3f2a1e;
+    border: 4px solid #4d2a1a;
+    background: #fff4d8;
+    font-size: clamp(20px, 4vw, 34px);
+    font-weight: 900;
+    letter-spacing: .08em;
+    box-shadow: 5px 5px 0 rgba(0,0,0,.18);
+    pointer-events: none;
+  }
+
+  .status {
+    position: absolute;
+    z-index: 10;
+    left: 16px;
+    bottom: 16px;
+    max-width: min(520px, calc(100vw - 32px));
+    padding: 12px 14px;
+    color: #3f2a1e;
+    background: rgba(255, 249, 232, .94);
+    border: 3px solid #4d2a1a;
+    border-radius: 14px;
+    box-shadow: 5px 5px 0 rgba(0,0,0,.18);
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
+  .status small {
+    display: block;
+    margin-top: 4px;
+    color: #7a5b42;
+    font-weight: 800;
+  }
+
+  .buttons {
+    position: absolute;
+    z-index: 11;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  button {
+    padding: 10px 14px;
+    color: #fff7df;
+    background: #9f2f26;
+    border: 3px solid #4d2a1a;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 #5c2219;
+    font-family: inherit;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #5c2219;
+  }
+
+  .speech {
+    position: absolute;
+    z-index: 9;
+    right: 32px;
+    top: 120px;
+    width: min(380px, 42vw);
+    min-height: 96px;
+    padding: 16px 18px;
+    color: #3f2a1e;
+    background: #fff9e8;
+    border: 4px solid #4d2a1a;
+    border-radius: 18px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,.18);
+    font-weight: 900;
+    line-height: 1.6;
+  }
+
+  .speech small {
+    display: block;
+    color: #7a5b42;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 700px) {
+    .speech {
+      left: 16px;
+      right: 16px;
+      top: 98px;
+      width: auto;
+      font-size: 13px;
+    }
+
+    .status {
+      font-size: 12px;
+      bottom: 76px;
+    }
+
+    .buttons {
+      left: 16px;
+      right: 16px;
+      bottom: 12px;
+      justify-content: center;
+    }
+
+    button {
+      flex: 1;
+      min-width: 92px;
+      padding: 9px 8px;
+      font-size: 12px;
+    }
+
+    .counter {
+      bottom: 86px;
+      height: 94px;
+    }
+
+    .sign {
+      bottom: 164px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>艦隊八幡社</h1>
+    <div class="sub">Live2D はちまん表示テスト</div>
+  </header>
+
+  <canvas id="stage"></canvas>
+
+  <div class="floor"></div>
+  <div class="counter"></div>
+  <div class="sign">艦隊八幡社</div>
+
+  <div class="speech">
+    <small>はちまん</small>
+    <span id="speechText">いらっしゃいませなのです。Live2D表示テスト中なのです。</span>
+  </div>
+
+  <div class="status" id="status">
+    読み込み準備中……
+    <small>モデルパス：export/hachiman.model3.json</small>
+  </div>
+
+  <div class="buttons">
+    <button id="resetBtn" type="button">位置リセット</button>
+    <button id="smallBtn" type="button">小さく</button>
+    <button id="bigBtn" type="button">大きく</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
+
+<script>
+const MODEL_PATH = "export/hachiman.model3.json";
+
+const statusEl = document.getElementById("status");
+const speechText = document.getElementById("speechText");
+const canvas = document.getElementById("stage");
+
+let app;
+let model;
+let baseScale = 0.32;
+
+function setStatus(text) {
+  statusEl.innerHTML = text + '<small>モデルパス：' + MODEL_PATH + '</small>';
+}
+
+function placeModel() {
+  if (!model || !app) return;
+
+  const w = app.renderer.width;
+  const h = app.renderer.height;
+
+  const scale = Math.min(w / 900, h / 900) * baseScale;
+  model.scale.set(scale);
+
+  model.x = w * 0.5;
+  model.y = h * 0.78;
+}
+
+async function init() {
+  try {
+    if (!window.PIXI) {
+      throw new Error("PIXI.js を読み込めませんでした。");
+    }
+
+    if (!PIXI.live2d || !PIXI.live2d.Live2DModel) {
+      throw new Error("pixi-live2d-display を読み込めませんでした。");
+    }
+
+    app = new PIXI.Application({
+      view: canvas,
+      resizeTo: window,
+      transparent: true,
+      autoDensity: true,
+      resolution: window.devicePixelRatio || 1
+    });
+
+    setStatus("Live2Dモデルを読み込み中……");
+
+    model = await PIXI.live2d.Live2DModel.from(MODEL_PATH, {
+      autoInteract: true
+    });
+
+    app.stage.addChild(model);
+
+    model.anchor.set(0.5, 0.92);
+    placeModel();
+
+    model.on("hit", (hitAreas) => {
+      speechText.textContent = "触られましたのです。そこは " + hitAreas.join(", ") + " なのです。";
+    });
+
+    window.addEventListener("resize", placeModel);
+
+    setStatus("読み込み成功。はちまん表示中なのです。");
+  } catch (error) {
+    console.error(error);
+    setStatus("読み込み失敗：" + error.message);
+    speechText.textContent = "Live2Dの読み込みに失敗したのです。ファイル名と配置を確認してほしいのです。";
+  }
+}
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  baseScale = 0.32;
+  placeModel();
+});
+
+document.getElementById("smallBtn").addEventListener("click", () => {
+  baseScale = Math.max(0.12, baseScale - 0.04);
+  placeModel();
+});
+
+document.getElementById("bigBtn").addEventListener("click", () => {
+  baseScale = Math.min(0.7, baseScale + 0.04);
+  placeModel();
+});
+
+init();
+</script>
+</body>
+</html>
