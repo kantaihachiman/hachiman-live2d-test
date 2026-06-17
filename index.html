@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はちまん Live2D パラメータ調査 v0.4a</title>
+<title>はちまん Live2D パラメータ調査 v0.4b</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:"Yu Gothic","Meiryo",sans-serif;color:#fff7df;background:radial-gradient(circle at 50% 18%,rgba(255,227,142,.18),transparent 34%),linear-gradient(180deg,#251714 0%,#56321f 55%,#9b6517 100%)}
@@ -37,91 +37,47 @@ button.subbtn{background:#3f735d;box-shadow:0 3px 0 #254537}
 
 @media(max-width:900px){
   body{overflow:auto}
-  .wrap{min-height:1180px;overflow:visible}
-  #stage{
-    position:absolute;
-    left:0;
-    top:0;
-    width:100vw;
-    height:720px;
-  }
-  header{padding-top:12px}
-  h1{font-size:32px}
-  .sub{font-size:13px}
-  .speech{
-    left:14px;
-    right:14px;
-    top:86px;
-    width:auto;
-    min-height:78px;
-    font-size:13px;
-    padding:11px 13px;
-  }
-  .floor{
-    bottom:auto;
-    top:560px;
-    height:200px;
-  }
-  .counter{
-    bottom:auto;
-    top:532px;
-    width:min(560px,86vw);
-    height:86px;
-  }
-  .sign{
-    bottom:auto;
-    top:484px;
-    min-width:190px;
-    padding:8px 14px;
-    font-size:22px;
-  }
-  .panel{
-    position:relative;
-    left:auto;
-    top:auto;
-    width:calc(100% - 20px);
-    max-height:none;
-    margin:740px auto 16px;
-  }
+  .wrap{min-height:1260px;overflow:visible}
+  #stage{position:absolute;left:0;top:0;width:100vw;height:620px;z-index:3;pointer-events:auto}
+  header{padding-top:10px;z-index:8}
+  h1{font-size:30px}
+  .sub{font-size:12px}
+  .speech{left:12px;right:12px;top:78px;width:auto;min-height:64px;font-size:12px;padding:9px 11px;z-index:10}
+  .floor{bottom:auto;top:460px;height:190px;z-index:1}
+  .counter{bottom:auto;top:438px;width:min(520px,86vw);height:80px;z-index:2}
+  .sign{bottom:auto;top:392px;min-width:180px;padding:7px 12px;font-size:20px;z-index:6}
+  .panel{position:relative;z-index:30;left:auto;top:auto;width:calc(100% - 20px);max-height:none;margin:650px auto 16px}
 }
-
 @media(max-width:520px){
-  .wrap{min-height:1220px}
-  #stage{height:690px}
-  .speech{top:82px}
-  .floor{top:535px}
-  .counter{top:510px}
-  .sign{top:462px}
-  .panel{margin-top:710px}
+  .wrap{min-height:1280px}
+  #stage{height:610px}
+  .speech{top:74px}
+  .floor{top:445px}
+  .counter{top:424px}
+  .sign{top:378px}
+  .panel{margin-top:630px}
   .btns{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D パラメータ調査・モーション確認 v0.4a</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D パラメータ調査・モーション確認 v0.4b</div></header>
 <canvas id="stage"></canvas>
 <div class="floor"></div><div class="counter"></div><div class="sign">艦隊八幡社</div>
 
-<div class="speech"><small>はちまん</small><span id="speechText">スマホ表示補正版なのです。表示位置を上に調整したのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">スマホでは上に表示、操作パネルは下へ逃がしたのです。</span></div>
 
 <section class="panel">
   <h2>動作確認パネル</h2>
   <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
-
   <div class="btns">
-    <button id="idleBtn" class="subbtn">待機ゆれ</button>
-    <button id="stopBtn">停止</button>
-    <button id="bowBtn">おじぎ</button>
-    <button id="waveBtn">手をふる</button>
-    <button id="swayBtn">左右ゆれ</button>
-    <button id="jumpBtn">ぴょこ</button>
-    <button id="breathBtn">呼吸強め</button>
-    <button id="resetParamBtn">パラメータ初期化</button>
-    <button id="smallBtn">小さく</button>
-    <button id="bigBtn">大きく</button>
+    <button id="idleBtn" class="subbtn">待機ゆれ</button><button id="stopBtn">停止</button>
+    <button id="bowBtn">おじぎ</button><button id="waveBtn">手をふる</button>
+    <button id="swayBtn">左右ゆれ</button><button id="jumpBtn">ぴょこ</button>
+    <button id="breathBtn">呼吸強め</button><button id="resetParamBtn">パラメータ初期化</button>
+    <button id="smallBtn">小さく</button><button id="bigBtn">大きく</button>
   </div>
-
   <h2>パラメータ一覧</h2>
   <div class="note">モデル内のパラメータを自動取得して表示します。スライダーで直接値を変更できます。</div>
   <div class="paramTools"><input id="filter" placeholder="例：Arm / Body / Breath / Angle"></div>
@@ -140,297 +96,76 @@ const speechText=document.getElementById("speechText");
 const canvas=document.getElementById("stage");
 const paramListEl=document.getElementById("paramList");
 const filterEl=document.getElementById("filter");
+let app=null,model=null,core=null,baseScale=0.26,params=[],defaultValues={},activeAnim=null;
 
-let app=null,model=null,core=null,baseScale=0.26;
-let params=[];
-let defaultValues={};
-let activeAnim=null;
-let rafId=null;
-
-function setStatus(text,detail){
-  statusEl.innerHTML=text+"<small>モデルパス："+MODEL_PATH+"</small>"+(detail?"<small>"+detail+"</small>":"");
-}
-
-function getLive2DModelClass(){
-  if(window.PIXI && PIXI.live2d && PIXI.live2d.Live2DModel) return PIXI.live2d.Live2DModel;
-  if(window.Live2DModel) return window.Live2DModel;
-  if(window.PIXI && PIXI.Live2DModel) return PIXI.Live2DModel;
-  return null;
-}
-
-function idToString(id){
-  if(id==null)return "";
-  if(typeof id==="string")return id;
-  if(id.s)return id.s;
-  if(id.id)return id.id;
-  if(id._id)return id._id;
-  if(id.toString)return id.toString();
-  return String(id);
-}
-
+function setStatus(text,detail){statusEl.innerHTML=text+"<small>モデルパス："+MODEL_PATH+"</small>"+(detail?"<small>"+detail+"</small>":"")}
+function getLive2DModelClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
+function idToString(id){if(id==null)return "";if(typeof id==="string")return id;if(id.s)return id.s;if(id.id)return id.id;if(id._id)return id._id;if(id.toString)return id.toString();return String(id)}
 function collectParams(){
-  core=model && model.internalModel && model.internalModel.coreModel;
+  core=model&&model.internalModel&&model.internalModel.coreModel;
   const out=[];
-
-  try{
-    if(core && typeof core.getParameterCount==="function" && typeof core.getParameterId==="function"){
-      const n=core.getParameterCount();
-      for(let i=0;i<n;i++){
-        out.push({index:i,id:idToString(core.getParameterId(i))});
-      }
-    }
-  }catch(e){}
-
-  const candidates=[
-    core && core._parameterIds,
-    core && core.parameterIds,
-    core && core.parameters && core.parameters.ids,
-    core && core._model && core._model.parameters && core._model.parameters.ids,
-    model && model.internalModel && model.internalModel.settings && model.internalModel.settings.parameters
-  ];
-
-  candidates.forEach(c=>{
-    if(!c)return;
-    if(Array.isArray(c)){
-      c.forEach((x,i)=>{
-        const id=typeof x==="object" && x.id ? x.id : idToString(x);
-        if(id && !out.some(p=>p.id===id)) out.push({index:i,id});
-      });
-    }
-  });
-
-  return out.filter(p=>p.id);
+  try{if(core&&typeof core.getParameterCount==="function"&&typeof core.getParameterId==="function"){const n=core.getParameterCount();for(let i=0;i<n;i++){out.push({index:i,id:idToString(core.getParameterId(i))})}}}catch(e){}
+  const candidates=[core&&core._parameterIds,core&&core.parameterIds,core&&core.parameters&&core.parameters.ids,core&&core._model&&core._model.parameters&&core._model.parameters.ids,model&&model.internalModel&&model.internalModel.settings&&model.internalModel.settings.parameters];
+  candidates.forEach(c=>{if(!c)return;if(Array.isArray(c)){c.forEach((x,i)=>{const id=typeof x==="object"&&x.id?x.id:idToString(x);if(id&&!out.some(p=>p.id===id))out.push({index:i,id})})}});
+  return out.filter(p=>p.id)
 }
-
-function getParamValue(id,index){
-  try{
-    if(core && typeof core.getParameterValueById==="function") return Number(core.getParameterValueById(id));
-  }catch(e){}
-  try{
-    if(core && typeof core.getParameterValue==="function") return Number(core.getParameterValue(index));
-  }catch(e){}
-  try{
-    const values=core && core._model && core._model.parameters && core._model.parameters.values;
-    if(values && values[index]!=null) return Number(values[index]);
-  }catch(e){}
-  return 0;
-}
-
-function setParamValue(id,value,index){
-  value=Number(value);
-  try{
-    if(core && typeof core.setParameterValueById==="function"){
-      core.setParameterValueById(id,value);
-      return;
-    }
-  }catch(e){}
-  try{
-    if(core && typeof core.setParameterValue==="function"){
-      core.setParameterValue(index,value);
-      return;
-    }
-  }catch(e){}
-  try{
-    const values=core && core._model && core._model.parameters && core._model.parameters.values;
-    if(values && values[index]!=null) values[index]=value;
-  }catch(e){}
-}
-
-function findParam(words){
-  const lowerWords=words.map(w=>w.toLowerCase());
-  return params.find(p=>{
-    const id=p.id.toLowerCase();
-    return lowerWords.every(w=>id.includes(w));
-  });
-}
-
-function setP(words,value){
-  const p=findParam(words);
-  if(p) setParamValue(p.id,value,p.index);
-}
-
-function refreshOutputs(){
-  params.forEach(p=>{
-    const out=document.getElementById("out_"+p.safe);
-    const range=document.getElementById("range_"+p.safe);
-    if(out && range){
-      const v=getParamValue(p.id,p.index);
-      out.value=v.toFixed(2);
-      range.value=Math.max(-30,Math.min(30,v));
-    }
-  });
-}
-
+function getParamValue(id,index){try{if(core&&typeof core.getParameterValueById==="function")return Number(core.getParameterValueById(id))}catch(e){}try{if(core&&typeof core.getParameterValue==="function")return Number(core.getParameterValue(index))}catch(e){}try{const values=core&&core._model&&core._model.parameters&&core._model.parameters.values;if(values&&values[index]!=null)return Number(values[index])}catch(e){}return 0}
+function setParamValue(id,value,index){value=Number(value);try{if(core&&typeof core.setParameterValueById==="function"){core.setParameterValueById(id,value);return}}catch(e){}try{if(core&&typeof core.setParameterValue==="function"){core.setParameterValue(index,value);return}}catch(e){}try{const values=core&&core._model&&core._model.parameters&&core._model.parameters.values;if(values&&values[index]!=null)values[index]=value}catch(e){}}
+function findParam(words){const lowerWords=words.map(w=>w.toLowerCase());return params.find(p=>{const id=p.id.toLowerCase();return lowerWords.every(w=>id.includes(w))})}
+function setP(words,value){const p=findParam(words);if(p)setParamValue(p.id,value,p.index)}
+function refreshOutputs(){params.forEach(p=>{const out=document.getElementById("out_"+p.safe);const range=document.getElementById("range_"+p.safe);if(out&&range){const v=getParamValue(p.id,p.index);out.value=v.toFixed(2);range.value=Math.max(-30,Math.min(30,v))}})}
 function renderParams(){
   const q=filterEl.value.trim().toLowerCase();
-  paramListEl.innerHTML=params.map(p=>{
-    const visible=!q || p.id.toLowerCase().includes(q);
-    const v=getParamValue(p.id,p.index);
-    return `<div class="param ${visible?'':'hide'}">
-      <b>${p.id}</b>
-      <div class="row">
-        <input id="range_${p.safe}" type="range" min="-30" max="30" step="0.1" value="${v}">
-        <output id="out_${p.safe}">${v.toFixed(2)}</output>
-      </div>
-    </div>`;
-  }).join("");
-
-  params.forEach(p=>{
-    const range=document.getElementById("range_"+p.safe);
-    const out=document.getElementById("out_"+p.safe);
-    if(range){
-      range.addEventListener("input",()=>{
-        stopAnim(false);
-        setParamValue(p.id,range.value,p.index);
-        out.value=Number(range.value).toFixed(2);
-      });
-    }
-  });
+  paramListEl.innerHTML=params.map(p=>{const visible=!q||p.id.toLowerCase().includes(q);const v=getParamValue(p.id,p.index);return `<div class="param ${visible?'':'hide'}"><b>${p.id}</b><div class="row"><input id="range_${p.safe}" type="range" min="-30" max="30" step="0.1" value="${v}"><output id="out_${p.safe}">${v.toFixed(2)}</output></div></div>`}).join("");
+  params.forEach(p=>{const range=document.getElementById("range_"+p.safe);const out=document.getElementById("out_"+p.safe);if(range){range.addEventListener("input",()=>{stopAnim(false);setParamValue(p.id,range.value,p.index);out.value=Number(range.value).toFixed(2)})}})
 }
-
-function resetParams(){
-  params.forEach(p=>{
-    if(defaultValues[p.id]!=null) setParamValue(p.id,defaultValues[p.id],p.index);
-  });
-  refreshOutputs();
-}
-
+function resetParams(){params.forEach(p=>{if(defaultValues[p.id]!=null)setParamValue(p.id,defaultValues[p.id],p.index)});refreshOutputs()}
 function placeModel(){
-  if(!model || !app)return;
-
-  const w=app.renderer.width;
-  const h=app.renderer.height;
-  const isMobile=w<=700;
-
+  if(!model||!app)return;
+  const w=app.renderer.width,h=app.renderer.height,isMobile=w<=700;
   if(isMobile){
-    const scale=Math.min(Math.max(w/420,0.82),1.12)*0.24;
+    const scale=Math.min(Math.max(w/420,0.82),1.12)*0.20;
     model.scale.set(scale);
     model.x=w*0.5;
-    model.y=Math.min(520, h*0.62);
+    model.y=430;
   }else{
     const scale=Math.min(w/900,h/900)*baseScale;
-    model.scale.set(scale);
-    model.x=w*0.5;
-    model.y=h*0.80;
+    model.scale.set(scale);model.x=w*0.5;model.y=h*0.80;
   }
 }
-
-function stopAnim(reset=true){
-  activeAnim=null;
-  if(reset) resetParams();
-  speechText.textContent="停止しましたのです。";
-}
-
-function startAnim(name){
-  activeAnim={name,start:performance.now()};
-  speechText.textContent={
-    idle:"待機ゆれ確認中なのです。",
-    bow:"おじぎ確認中なのです。",
-    wave:"手をふる確認中なのです。",
-    sway:"左右ゆれ確認中なのです。",
-    jump:"ぴょこ確認中なのです。",
-    breath:"呼吸強め確認中なのです。"
-  }[name]||"確認中なのです。";
-}
-
+function stopAnim(reset=true){activeAnim=null;if(reset)resetParams();speechText.textContent="停止しましたのです。"}
+function startAnim(name){activeAnim={name,start:performance.now()};speechText.textContent={idle:"待機ゆれ確認中なのです。",bow:"おじぎ確認中なのです。",wave:"手をふる確認中なのです。",sway:"左右ゆれ確認中なのです。",jump:"ぴょこ確認中なのです。",breath:"呼吸強め確認中なのです。"}[name]||"確認中なのです。"}
 function animate(){
-  rafId=requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
   if(!activeAnim)return;
-
   const t=(performance.now()-activeAnim.start)/1000;
   resetParams();
-
-  if(activeAnim.name==="idle"){
-    setP(["breath"],Math.sin(t*2.2)*0.7);
-    setP(["body","angle","z"],Math.sin(t*1.4)*3);
-    setP(["angle","z"],Math.sin(t*1.2)*2);
-  }
-
-  if(activeAnim.name==="bow"){
-    const phase=Math.min(1,t/1.2);
-    const v=Math.sin(phase*Math.PI)*18;
-    setP(["angle","y"],-v);
-    setP(["body","angle","x"],v*0.35);
-    setP(["breath"],v*0.04);
-    if(t>1.35) stopAnim(true);
-  }
-
-  if(activeAnim.name==="wave"){
-    setP(["body","angle","z"],Math.sin(t*5.0)*4);
-    setP(["angle","z"],Math.sin(t*5.0)*3);
-    setP(["arm","r"],Math.sin(t*10)*24);
-    setP(["arm","right"],Math.sin(t*10)*24);
-    setP(["arm","l"],Math.sin(t*7)*6);
-    if(t>2.4) stopAnim(true);
-  }
-
-  if(activeAnim.name==="sway"){
-    setP(["body","angle","x"],Math.sin(t*3.2)*12);
-    setP(["angle","x"],Math.sin(t*3.2)*10);
-    setP(["angle","z"],Math.sin(t*3.2)*5);
-  }
-
-  if(activeAnim.name==="jump"){
-    const bounce=Math.max(0,Math.sin(t*7))*1.0;
-    setP(["breath"],bounce*2.0);
-    setP(["body","angle","y"],bounce*10);
-    setP(["angle","y"],bounce*7);
-    if(model){
-      const isMobile=app.renderer.width<=700;
-      const baseY=isMobile?Math.min(520,app.renderer.height*0.62):app.renderer.height*0.80;
-      model.y=baseY-(bounce*(isMobile?24:38));
-      model.scale.y=model.scale.x*(1+bounce*0.08);
-    }
-    if(t>1.5){
-      if(model) model.scale.y=model.scale.x;
-      placeModel();
-      stopAnim(true);
-    }
-  }
-
-  if(activeAnim.name==="breath"){
-    setP(["breath"],Math.sin(t*4)*1.8);
-    setP(["body","angle","y"],Math.sin(t*4)*4);
-  }
-
-  refreshOutputs();
+  if(activeAnim.name==="idle"){setP(["breath"],Math.sin(t*2.2)*0.7);setP(["body","angle","z"],Math.sin(t*1.4)*3);setP(["angle","z"],Math.sin(t*1.2)*2)}
+  if(activeAnim.name==="bow"){const phase=Math.min(1,t/1.2);const v=Math.sin(phase*Math.PI)*18;setP(["angle","y"],-v);setP(["body","angle","x"],v*0.35);setP(["breath"],v*0.04);if(t>1.35)stopAnim(true)}
+  if(activeAnim.name==="wave"){setP(["body","angle","z"],Math.sin(t*5.0)*4);setP(["angle","z"],Math.sin(t*5.0)*3);setP(["arm","r"],Math.sin(t*10)*24);setP(["arm","right"],Math.sin(t*10)*24);setP(["arm","l"],Math.sin(t*7)*6);if(t>2.4)stopAnim(true)}
+  if(activeAnim.name==="sway"){setP(["body","angle","x"],Math.sin(t*3.2)*12);setP(["angle","x"],Math.sin(t*3.2)*10);setP(["angle","z"],Math.sin(t*3.2)*5)}
+  if(activeAnim.name==="jump"){const bounce=Math.max(0,Math.sin(t*7))*1.0;setP(["breath"],bounce*2.0);setP(["body","angle","y"],bounce*10);setP(["angle","y"],bounce*7);if(model){const isMobile=app.renderer.width<=700;const baseY=isMobile?430:app.renderer.height*0.80;model.y=baseY-(bounce*(isMobile?20:38));model.scale.y=model.scale.x*(1+bounce*0.08)}if(t>1.5){if(model)model.scale.y=model.scale.x;placeModel();stopAnim(true)}}
+  if(activeAnim.name==="breath"){setP(["breath"],Math.sin(t*4)*1.8);setP(["body","angle","y"],Math.sin(t*4)*4)}
+  refreshOutputs()
 }
-
 async function init(){
   try{
-    const Live2DModel=getLive2DModelClass();
-    if(!Live2DModel) throw new Error("Live2DModel クラスが見つかりません。");
-
+    const Live2DModel=getLive2DModelClass();if(!Live2DModel)throw new Error("Live2DModel クラスが見つかりません。");
     app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:true,resolution:window.devicePixelRatio||1});
     setStatus("Live2Dモデルを読み込み中……");
     model=await Live2DModel.from(MODEL_PATH,{autoInteract:true});
     app.stage.addChild(model);
-
-    if(model.anchor) model.anchor.set(0.5,0.92);
+    if(model.anchor)model.anchor.set(0.5,0.92);
     placeModel();
-
     params=collectParams().map((p,i)=>({...p,safe:"p"+i+"_"+p.id.replace(/[^a-zA-Z0-9_-]/g,"_")}));
     params.forEach(p=>defaultValues[p.id]=getParamValue(p.id,p.index));
-
-    renderParams();
-    animate();
-
-    if(model.on){
-      model.on("hit",(hitAreas)=>{
-        speechText.textContent="触られましたのです。そこは "+hitAreas.join(", ")+" なのです。";
-      });
-    }
-
+    renderParams();animate();
+    if(model.on){model.on("hit",(hitAreas)=>{speechText.textContent="触られましたのです。そこは "+hitAreas.join(", ")+" なのです。"})}
     window.addEventListener("resize",placeModel);
     setStatus("読み込み成功。パラメータ "+params.length+" 件を取得しました。");
-    speechText.textContent="表示成功なのです。スマホでも見えるように調整したのです。";
-  }catch(error){
-    console.error(error);
-    setStatus("読み込み失敗："+error.message);
-    speechText.textContent="Live2Dの読み込みに失敗したのです。";
-  }
+    speechText.textContent="表示成功なのです。スマホでは上に避難したのです。";
+  }catch(error){console.error(error);setStatus("読み込み失敗："+error.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
 }
-
 filterEl.addEventListener("input",renderParams);
 document.getElementById("idleBtn").addEventListener("click",()=>startAnim("idle"));
 document.getElementById("stopBtn").addEventListener("click",()=>stopAnim(true));
@@ -442,7 +177,6 @@ document.getElementById("breathBtn").addEventListener("click",()=>startAnim("bre
 document.getElementById("resetParamBtn").addEventListener("click",()=>{stopAnim(true);speechText.textContent="初期化しましたのです。"});
 document.getElementById("smallBtn").addEventListener("click",()=>{baseScale=Math.max(0.12,baseScale-0.04);placeModel()});
 document.getElementById("bigBtn").addEventListener("click",()=>{baseScale=Math.min(0.7,baseScale+0.04);placeModel()});
-
 init();
 </script>
 </body>
