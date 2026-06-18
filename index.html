@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D 自動店番 v0.9</title>
+<title>艦隊八幡社 Live2D 自動店番 v0.9aa</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -144,7 +144,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   <div class="wallPattern"></div>
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="subtitle">Live2D 自動店番 v0.9</div>
+    <div class="subtitle">Live2D 自動店番 v0.9a</div>
   </header>
 
   <canvas id="stage"></canvas>
@@ -152,7 +152,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
 
   <div class="speech">
     <small>はちまん</small>
-    <span id="speechText">いらっしゃいませなのです。艦隊八幡社の入口なのです。</span>
+    <span id="speechText">いらっしゃいませなのです。自動店番を修正したのです。</span>
   </div>
 
   <div class="portalCards">
@@ -176,14 +176,14 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   </div>
 
   <section class="debugPanel" id="debugPanel">
-    <h2>自動店番確認</h2>
+    <h2>自動店番確認 v0.9a</h2>
     <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
     <div class="measure" id="measure">計測待ち……</div>
     <div class="debugBtns">
       <button id="fitBtn" class="green">最適配置</button>
       <button id="boxBtn">赤枠</button>
-      <button id="testMouthBtn">口パク</button>
-      <button id="testWaveBtn">手ふり</button>
+      <button id="testMouthBtn">口パク強制</button>
+      <button id="testWaveBtn">手ふり強制</button>
     </div>
   </section>
 
@@ -219,7 +219,7 @@ let mouthUntil=0;
 let mouthLevel=0;
 
 const idleLines=[
-  "いらっしゃいませなのです。艦隊八幡社の入口なのです。",
+  "いらっしゃいませなのです。自動店番を修正したのです。",
   "今日も店番中なのです。ゆっくり見ていってほしいのです。",
   "おみくじ、ゲーム、売店へ案内できるのです。",
   "はちまんは、ただいま自動店番中なのです。",
@@ -344,8 +344,8 @@ function applyIdle(t){
   setExact("ParamEyeBallX",currentLook.x/30);
   setExact("ParamEyeBallY",currentLook.y/30);
 
-  setExact("ParamArmL",-1.2+Math.sin(t*1.3)*0.8);
-  setExact("ParamArmR",-1.0+Math.sin(t*1.25+0.8)*0.8);
+  setExact("Param2",1.2+Math.sin(t*1.3)*0.8);
+  setExact("Param",-1.0+Math.sin(t*1.25+0.8)*0.8);
 }
 function applyBlink(now){
   const cycle=(now/1000)%5.7;
@@ -358,12 +358,12 @@ function applyBlink(now){
 }
 function applyMouth(now,t){
   if(now<mouthUntil){
-    mouthLevel=(Math.sin(t*18)>0?0.75:0.25)+Math.sin(t*31)*0.08;
+    mouthLevel=(Math.sin(t*18)>0?1.0:0.15)+Math.sin(t*31)*0.10;
   }else{
-    mouthLevel*=0.85;
+    mouthLevel*=0.82;
   }
   setExact("ParamMouthOpenY",Math.max(0,Math.min(1,mouthLevel)));
-  setExact("ParamMouthForm",Math.sin(t*8)*0.35);
+  setExact("ParamMouthForm",Math.sin(t*8)*0.75);
 }
 function applyAction(now,t){
   if(!action)return;
@@ -374,14 +374,14 @@ function applyAction(now,t){
     model.y=baseY-b*(isMobile()?14:30);
     model.scale.y=model.scale.x*(1+b*0.05);
     setExact("ParamBodyAngleY",b*7);
-    setExact("ParamArmL",b*5);
-    setExact("ParamArmR",b*5);
+    setExact("Param2",-b*8);
+    setExact("Param",b*8);
     if(a>1.1){model.scale.y=model.scale.x;stopAction();}
   }
   if(action.name==="smallWave"){
     const b=Math.sin(a*10);
-    setExact("ParamArmR",8+b*12);
-    setExact("ParamArmL",-2+Math.sin(a*5)*3);
+    setExact("Param",16+b*12);
+    setExact("Param2",-6+Math.sin(a*5)*4);
     setExact("ParamBodyAngleZ",Math.sin(a*4)*5);
     setExact("ParamAngleZ",Math.sin(a*4)*2.5);
     if(a>1.8)stopAction();
@@ -390,9 +390,21 @@ function applyAction(now,t){
     const b=Math.sin(Math.min(1,a/1.25)*Math.PI);
     setExact("ParamAngleY",-12*b);
     setExact("ParamBodyAngleX",-7*b);
-    setExact("ParamArmL",3*b);
-    setExact("ParamArmR",3*b);
+    setExact("Param2",-10*b);
+    setExact("Param",10*b);
     if(a>1.35)stopAction();
+  }
+  if(action.name==="bothHands"){
+    const b=Math.sin(Math.min(1,a/1.1)*Math.PI);
+    setExact("Param",30*b);
+    setExact("Param2",-30*b);
+    setExact("ParamBodyAngleY",6*b);
+    if(a>1.25)stopAction();
+  }
+  if(action.name==="mouthTest"){
+    setExact("ParamMouthOpenY",Math.sin(a*18)>0?1:0);
+    setExact("ParamMouthForm",Math.sin(a*8));
+    if(a>2.4)stopAction();
   }
   if(action.name==="look"){
     if(a<0.1){
@@ -440,7 +452,7 @@ async function init(){
     params=collectParams();
     params.forEach(p=>defaults[p.id]=getV(p.id,p.index));
     placeModel();
-    setStatus("読み込み成功。v0.9 自動店番中です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v0.9a 腕Param修正版で自動店番中です。","取得パラメータ："+params.length+"件");
     nextAutoAt=performance.now()+2200;
     tick();
     window.addEventListener("resize",placeModel);
@@ -460,8 +472,8 @@ document.getElementById("debugBtn").onclick=()=>debugPanel.classList.toggle("ope
 document.getElementById("mDebugBtn").onclick=()=>debugPanel.classList.toggle("open");
 document.getElementById("fitBtn").onclick=placeModel;
 document.getElementById("boxBtn").onclick=()=>{showBox=!showBox;measure()};
-document.getElementById("testMouthBtn").onclick=()=>speak("あいうえお、口パク確認なのです。",2200);
-document.getElementById("testWaveBtn").onclick=()=>startAction("smallWave","手をふる確認なのです。");
+document.getElementById("testMouthBtn").onclick=()=>startAction("mouthTest","あいうえお、口パク強制確認なのです。");
+document.getElementById("testWaveBtn").onclick=()=>startAction("smallWave","ParamとParam2で手をふる確認なのです。");
 document.getElementById("mGuideBtn").onclick=()=>startAction("smallJump","ここは艦隊八幡社の入口なのです。");
 document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは朝昼晩で引けるようにしたいのです。");
 document.getElementById("mGameBtn").onclick=()=>startAction("smallJump","ゲームはCRいずもちゃんへ案内する予定なのです。");
