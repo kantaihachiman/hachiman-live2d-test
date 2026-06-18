@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2Dポータル v0.7a</title>
+<title>艦隊八幡社 Live2Dポータル v0.7bb</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -115,10 +115,9 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
     left:14px;right:14px;top:94px;width:auto;min-height:70px;
     padding:10px 12px;font-size:13px;line-height:1.55;
   }
-  .counter{height:82px;width:72vw;left:42%;bottom:30px;border-radius:18px 18px 0 0}
+  .counter{height:74px;width:68vw;left:40%;bottom:28px;border-radius:18px 18px 0 0}
   .floor{bottom:-80px;height:210px}
   .portalCards{
-    bottom:68px;width:92vw;grid-template-columns:repeat(3,1fr);gap:7px;z-index:14;
     display:none;
   }
   .card{min-height:70px;padding:9px 6px;border-width:3px;border-radius:12px}
@@ -130,16 +129,16 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
     display:flex;
     position:fixed;
     z-index:60;
-    right:10px;
-    bottom:18px;
-    width:96px;
+    right:9px;
+    bottom:16px;
+    width:92px;
     flex-direction:column;
     gap:7px;
   }
   .mobileBar button{
     flex:none;
-    width:96px;
-    padding:9px 6px;
+    width:92px;
+    padding:9px 5px;
     font-size:12px;
     border-radius:12px;
   }
@@ -154,7 +153,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   <div class="wallPattern"></div>
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="subtitle">Live2D ポータル試作 v0.7a</div>
+    <div class="subtitle">Live2D ポータル試作 v0.7bb</div>
   </header>
 
   <canvas id="stage"></canvas>
@@ -162,7 +161,7 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
 
   <div class="speech">
     <small>はちまん</small>
-    <span id="speechText">いらっしゃいませなのです。右の札から案内を選べるのです。</span>
+    <span id="speechText">いらっしゃいませなのです。艦隊八幡社の入口なのです。</span>
   </div>
 
   <div class="portalCards">
@@ -201,9 +200,11 @@ button.green{background:var(--green);box-shadow:0 4px 0 #254537}
   </section>
 
   <div class="mobileBar">
-    <button id="mMenuBtn">案内</button>
+    <button id="mGuideBtn">案内</button>
+    <button id="mOmikujiBtn">おみくじ</button>
+    <button id="mGameBtn">ゲーム</button>
+    <button id="mShopBtn">売店</button>
     <button id="mJumpBtn">ぴょこ</button>
-    <button id="mWaveBtn">手をふる</button>
     <button id="mDebugBtn">確認</button>
   </div>
 </div>
@@ -244,7 +245,7 @@ function placeModel(){
   if(isMobile()){
     model.scale.set(0.050);
     model.x=185;
-    model.y=500;
+    model.y=492;
   }else{
     model.scale.set(0.220);
     model.x=w*0.50;
@@ -340,8 +341,8 @@ async function init(){
     params.forEach(p=>defaults[p.id]=getV(p.id,p.index));
     placeModel();
     animate();
-    setStatus("読み込み成功。v0.7a ポータル表示中です。");
-    speechText.textContent="いらっしゃいませなのです。右の札から案内を選べるのです。";
+    setStatus("読み込み成功。v0.7b ポータル表示中です。");
+    speechText.textContent="いらっしゃいませなのです。艦隊八幡社の入口なのです。";
     window.addEventListener("resize",placeModel);
   }catch(e){
     console.error(e);
@@ -359,9 +360,11 @@ document.getElementById("fitBtn").onclick=placeModel;
 document.getElementById("boxBtn").onclick=()=>{showBox=!showBox;measure()};
 document.getElementById("smallBtn").onclick=()=>{if(model){model.scale.set(Math.max(.01,model.scale.x-.01));measure()}};
 document.getElementById("bigBtn").onclick=()=>{if(model){model.scale.set(model.scale.x+.01);measure()}};
-document.getElementById("mMenuBtn").onclick=()=>{speechText.textContent="メニューは今後ここに並べるのです。";startAnim("jump")};
+document.getElementById("mGuideBtn").onclick=()=>{speechText.textContent="ここは艦隊八幡社の入口なのです。右の札から選べるのです。";startAnim("jump")};
+document.getElementById("mOmikujiBtn").onclick=()=>{speechText.textContent="おみくじは朝昼晩で引けるようにしたいのです。";startAnim("bow")};
+document.getElementById("mGameBtn").onclick=()=>{speechText.textContent="ゲームはCRいずもちゃんへ案内する予定なのです。";startAnim("jump")};
+document.getElementById("mShopBtn").onclick=()=>{speechText.textContent="売店では、お守りや品物を並べるのです。";startAnim("wave")};
 document.getElementById("mJumpBtn").onclick=()=>startAnim("jump");
-document.getElementById("mWaveBtn").onclick=()=>startAnim("wave");
 document.getElementById("mDebugBtn").onclick=()=>debugPanel.classList.toggle("open");
 init();
 </script>
