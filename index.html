@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D 自動店番 v0.9d</title>
+<title>艦隊八幡社 Live2D スマホUI調整 v1.0</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -40,22 +40,75 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 .status small,.readout small{display:block;color:#7a5b42;word-break:break-all}.debugBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .mobileBar{display:none}
 @media(max-width:900px){
-  header{top:12px}h1{font-size:36px}.sub{font-size:12px}
-  .speech{left:14px;right:14px;top:94px;width:auto;min-height:70px;padding:10px 12px;font-size:13px;line-height:1.55}
-  .cards{display:none}.pcMenu{display:none}
-  .counter{height:74px;width:68vw;left:40%;bottom:28px;border-radius:18px 18px 0 0}.floor{bottom:-80px;height:210px}
-  .mobileBar{display:flex;position:fixed;z-index:60;right:9px;bottom:16px;width:92px;flex-direction:column;gap:7px}
-  .mobileBar button{flex:none;width:92px;padding:9px 5px;font-size:12px;border-radius:12px}
-  .debugPanel{left:10px;right:10px;top:92px;width:auto;max-height:calc(100vh - 150px)}
+  header{top:10px}
+  h1{font-size:34px}
+  .sub{font-size:12px;margin-top:3px}
+
+  .speech{
+    left:14px;
+    right:14px;
+    top:88px;
+    width:auto;
+    min-height:74px;
+    padding:11px 13px;
+    font-size:13px;
+    line-height:1.55;
+    border-radius:17px;
+  }
+
+  .cards{display:none}
+  .pcMenu{display:none}
+
+  .counter{
+    height:66px;
+    width:64vw;
+    left:38%;
+    bottom:28px;
+    border-radius:18px 18px 0 0;
+    opacity:.92;
+  }
+
+  .floor{
+    bottom:-84px;
+    height:205px;
+  }
+
+  .mobileBar{
+    display:flex;
+    position:fixed;
+    z-index:60;
+    right:8px;
+    bottom:18px;
+    width:86px;
+    flex-direction:column;
+    gap:7px;
+  }
+
+  .mobileBar button{
+    flex:none;
+    width:86px;
+    min-height:54px;
+    padding:8px 5px;
+    font-size:13px;
+    border-radius:14px;
+  }
+
+  .debugPanel{
+    left:10px;
+    right:10px;
+    top:92px;
+    width:auto;
+    max-height:calc(100vh - 150px);
+  }
 }
 </style>
 </head>
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D 自動店番 v0.9d</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D スマホUI調整 v1.0</div></header>
 <canvas id="stage"></canvas>
-<div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。安全方式で自動店番するのです。</span></div>
+<div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
 <div class="cards">
   <div class="card" data-action="bow" data-say="おみくじはこちらなのです。朝昼晩で運勢を見ていくのです。"><div class="icon">⛩</div><div class="title">おみくじ</div><div class="desc">朝昼晩の運試し</div></div>
@@ -67,7 +120,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
 <section class="debugPanel" id="debugPanel">
-<h2>自動店番確認 v0.9d</h2>
+<h2>スマホUI確認 v1.0</h2>
 <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
 <div class="readout" id="readout">待機中……</div>
 <div class="debugBtns">
@@ -83,7 +136,6 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <button id="mOmikujiBtn">おみくじ</button>
   <button id="mGameBtn">ゲーム</button>
   <button id="mShopBtn">売店</button>
-  <button id="mDebugBtn">確認</button>
 </div>
 </div>
 
@@ -106,8 +158,19 @@ const idleLines=[
   "今日も店番中なのです。ゆっくり見ていってほしいのです。",
   "おみくじ、ゲーム、売店へ案内できるのです。",
   "艦隊八幡社、開店の儀なのです。",
-  "気になる札を選んでほしいのです。"
+  "気になる札を選んでほしいのです。",
+  "水分補給も大事なのです。",
+  "はちまんが入口でご案内するのです。"
 ];
+
+function timeGreeting(){
+  const h=new Date().getHours();
+  if(h>=5&&h<10)return "おはようございますなのです。今日も艦隊八幡社へようこそなのです。";
+  if(h>=10&&h<15)return "こんにちはなのです。お昼の店番中なのです。";
+  if(h>=15&&h<18)return "夕方が近いのです。少し涼しくなるとよいのです。";
+  if(h>=18&&h<23)return "こんばんはなのです。夜の艦隊八幡社も開いているのです。";
+  return "夜更かしはほどほどになのです。無理せず休んでほしいのです。";
+}
 
 function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
 function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
@@ -140,8 +203,16 @@ function applyValues(){
 function placeModel(){
   if(!model||!app)return;
   const w=app.renderer.width,h=app.renderer.height;
-  if(window.innerWidth<=900){model.scale.set(0.050);model.x=185;model.y=492}
-  else{model.scale.set(0.220);model.x=w*0.50;model.y=h*0.70}
+  if(window.innerWidth<=900){
+    model.scale.set(0.055);
+    model.x=172;
+    model.y=492;
+  }
+  else{
+    model.scale.set(0.220);
+    model.x=w*0.50;
+    model.y=h*0.70;
+  }
   if(model.anchor)model.anchor.set(0.5,0.92);
 }
 function speak(text,duration=1700){speechText.textContent=text;mouthUntil=performance.now()+duration}
@@ -233,8 +304,9 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v0.9d 安全方式で自動店番中です。","取得パラメータ："+params.length+"件");
-    nextAutoAt=performance.now()+2200;
+    setStatus("読み込み成功。v1.0 安全方式で自動店番中です。","取得パラメータ："+params.length+"件");
+    speak(timeGreeting(),2300);
+    nextAutoAt=performance.now()+3600;
     window.addEventListener("resize",placeModel);
     tick();
   }catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
@@ -242,15 +314,15 @@ async function init(){
 document.querySelectorAll(".card").forEach(card=>card.onclick=()=>startAction(card.dataset.action,card.dataset.say));
 document.getElementById("autoBtn").onclick=()=>{autoMode=!autoMode;speak(autoMode?"自動店番を再開したのです。":"自動店番を一時停止したのです。")};
 document.getElementById("debugBtn").onclick=()=>debugPanel.classList.toggle("open");
-document.getElementById("mDebugBtn").onclick=()=>debugPanel.classList.toggle("open");
+document.querySelector("header").addEventListener("dblclick",()=>debugPanel.classList.toggle("open"));
 document.getElementById("testRightBtn").onclick=()=>startAction("right","右腕テストなのです。");
 document.getElementById("testLeftBtn").onclick=()=>startAction("left","左腕テストなのです。");
 document.getElementById("testMouthBtn").onclick=()=>startAction("mouth","あいうえお、口パク確認なのです。");
 document.getElementById("testWaveBtn").onclick=()=>startAction("wave","手ふり確認なのです。");
-document.getElementById("mGuideBtn").onclick=()=>startAction("jump","ここは艦隊八幡社の入口なのです。");
-document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは朝昼晩で引けるようにしたいのです。");
-document.getElementById("mGameBtn").onclick=()=>startAction("jump","ゲームはCRいずもちゃんへ案内する予定なのです。");
-document.getElementById("mShopBtn").onclick=()=>startAction("wave","売店では、お守りや品物を並べるのです。");
+document.getElementById("mGuideBtn").onclick=()=>startAction("jump","ここは艦隊八幡社の入口なのです。はちまんがご案内するのです。");
+document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじはこちらなのです。朝昼晩の運試しなのです。");
+document.getElementById("mGameBtn").onclick=()=>startAction("jump","ゲームはこちらなのです。CRいずもちゃんへ案内する予定なのです。");
+document.getElementById("mShopBtn").onclick=()=>startAction("wave","売店はこちらなのです。お守りや品物を並べるのです。");
 init();
 </script>
 </body>
