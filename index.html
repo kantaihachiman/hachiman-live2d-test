@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D ランキング連携 v1.1aaaaa</title>
+<title>艦隊八幡社 Live2D ランキング・天気連携 v1.1baaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -115,12 +115,12 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D ランキング連携 v1.1aaa</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D ランキング・天気連携 v1.1baa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
 <div class="cards">
-  <div class="card" data-action="bow" data-say="おみくじはこちらなのです。朝昼晩で運勢を見ていくのです。"><div class="icon">⛩</div><div class="title">おみくじ</div><div class="desc">朝昼晩の運試し</div></div>
+  <div class="card" data-action="bow" data-say="おみくじは開発中なのです。楽しみにしていてくださいなのです。"><div class="icon">⛩</div><div class="title">おみくじ</div><div class="desc">開発中</div></div>
   <div class="card" data-action="gameSoon" data-say="CRいずもちゃんは準備中なのです。もう少し待ってほしいのです。" style="opacity:.55;filter:grayscale(100%);"><div class="icon">🎰</div><div class="title">ゲーム</div><div class="desc">CRいずもちゃん 近日開店</div></div>
   <div class="card" data-action="shopLink" data-say="はちまん売店はこちらなのです。"><div class="icon">🛍</div><div class="title">はちまん売店</div><div class="desc">開店中</div></div>
 </div>
@@ -129,7 +129,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
 <section class="debugPanel" id="debugPanel">
-<h2>ランキング連携確認 v1.1aaa</h2>
+<h2>ランキング・天気確認 v1.1baa</h2>
 <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
 <div class="readout" id="readout">待機中……</div>
 <div class="debugBtns">
@@ -161,10 +161,19 @@ const RANKING_API_URL="https://script.google.com/macros/s/AKfycbybwOEImMHuiC_ze7
 // 一時確認用：index.html?rankingUrl=AppsScriptのURL でも指定できます。
 const urlParams=new URLSearchParams(location.search);
 const RANKING_URL_OVERRIDE=urlParams.get("rankingUrl")||"";
+
+// 天気読み上げ用。初期値は横須賀付近です。
+// latitude / longitude はURLパラメータでも上書きできます。
+// 例：index.html?lat=35.2813&lon=139.6722
+const WEATHER_LAT=Number(urlParams.get("lat")||35.2813);
+const WEATHER_LON=Number(urlParams.get("lon")||139.6722);
+const WEATHER_LABEL=urlParams.get("weatherLabel")||"横須賀";
 const canvas=document.getElementById("stage"), statusEl=document.getElementById("status"), readout=document.getElementById("readout"), speechText=document.getElementById("speechText"), debugPanel=document.getElementById("debugPanel");
 let app=null,model=null,core=null,params=[],autoMode=true,nextAutoAt=0,action=null,mouthUntil=0;
 let rankingEntries=[];
 let rankingLoadedAt=0;
+let weatherInfo=null;
+let weatherLoadedAt=0;
 
 let v={
   Param:0, Param2:0, ParamMouthOpenY:0, ParamMouthForm:0,
@@ -253,9 +262,85 @@ function rankingLine(){
   return "現在の売上一位は、" + name + "さんなのです。" + sales + "文、難易度は" + difficulty + "なのです。";
 }
 
+function rankingTop3Line(){
+  if(!rankingEntries || rankingEntries.length===0)return "";
+  const top3=rankingEntries.slice(0,3);
+  const parts=top3.map((entry,idx)=>{
+    const rank=idx+1;
+    const name=safeName(entry.name);
+    const sales=formatNumber(entry.sales);
+    return rank + "位は" + name + "さん、" + sales + "文";
+  });
+  return "現在の売上ランキングなのです。" + parts.join("。") + "なのです。";
+}
+
+function weatherCodeText(code){
+  const c=Number(code);
+  if(c===0)return "快晴";
+  if([1,2,3].includes(c))return "くもり気味";
+  if([45,48].includes(c))return "霧";
+  if([51,53,55,56,57].includes(c))return "小雨";
+  if([61,63,65,66,67].includes(c))return "雨";
+  if([71,73,75,77].includes(c))return "雪";
+  if([80,81,82].includes(c))return "にわか雨";
+  if([95,96,99].includes(c))return "雷雨";
+  return "変わりやすい天気";
+}
+
+async function loadWeather(){
+  try{
+    const url="https://api.open-meteo.com/v1/forecast"
+      + "?latitude=" + encodeURIComponent(WEATHER_LAT)
+      + "&longitude=" + encodeURIComponent(WEATHER_LON)
+      + "&current=temperature_2m,weather_code"
+      + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+      + "&timezone=Asia%2FTokyo";
+    const res=await fetch(url,{cache:"no-store"});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+
+    weatherInfo={
+      temp:data.current && data.current.temperature_2m,
+      code:data.current && data.current.weather_code,
+      max:data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max[0],
+      min:data.daily && data.daily.temperature_2m_min && data.daily.temperature_2m_min[0],
+      rain:data.daily && data.daily.precipitation_probability_max && data.daily.precipitation_probability_max[0]
+    };
+    weatherLoadedAt=Date.now();
+    return true;
+  }catch(err){
+    console.warn("weather load failed",err);
+  }
+  return false;
+}
+
+function weatherLine(){
+  if(!weatherInfo)return "";
+  const weather=weatherCodeText(weatherInfo.code);
+  const temp=Math.round(Number(weatherInfo.temp));
+  const max=Math.round(Number(weatherInfo.max));
+  const min=Math.round(Number(weatherInfo.min));
+  const rain=Number(weatherInfo.rain);
+
+  let line=WEATHER_LABEL+"の今の天気は"+weather+"なのです。気温は"+temp+"度なのです。";
+  if(Number.isFinite(max)&&Number.isFinite(min)){
+    line+="今日の最高気温は"+max+"度、最低気温は"+min+"度くらいなのです。";
+  }
+  if(Number.isFinite(rain)){
+    if(rain>=50)line+="雨が降るかもしれないので、傘があると安心なのです。";
+    else if(max>=28)line+="暑くなりそうなので、水分補給してほしいのです。";
+    else line+="お出かけしやすそうなのです。";
+  }
+  return line;
+}
+
 function randomShopkeeperLine(){
-  if(rankingEntries.length && Math.random()<0.35){
-    return rankingLine();
+  const r=Math.random();
+  if(rankingEntries.length && r<0.30){
+    return Math.random()<0.55 ? rankingTop3Line() : rankingLine();
+  }
+  if(weatherInfo && r<0.50){
+    return weatherLine();
   }
   return idleLines[Math.floor(Math.random()*idleLines.length)];
 }
@@ -393,14 +478,21 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.1a ランキング連携版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.1b ランキング連携版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     loadRanking().then(ok=>{
       if(ok && rankingEntries.length){
-        setTimeout(()=>speak(rankingLine(),2400),2600);
+        setTimeout(()=>speak(rankingTop3Line(),3600),2600);
       }
     });
-    nextAutoAt=performance.now()+5200;
+
+    loadWeather().then(ok=>{
+      if(ok && weatherInfo){
+        setTimeout(()=>speak(weatherLine(),3600),6900);
+      }
+    });
+
+    nextAutoAt=performance.now()+10500;
     window.addEventListener("resize",placeModel);
     tick();
   }catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
@@ -424,10 +516,10 @@ document.getElementById("testLeftBtn").onclick=()=>startAction("left","左腕テ
 document.getElementById("testMouthBtn").onclick=()=>startAction("mouth","あいうえお、口パク確認なのです。");
 document.getElementById("testWaveBtn").onclick=()=>startAction("wave","手ふり確認なのです。");
 document.getElementById("mGuideBtn").onclick=()=>{
-  const line=rankingEntries.length ? rankingLine() : "ここは艦隊八幡社の入口なのです。はちまんがご案内するのです。";
+  const line=rankingEntries.length ? rankingTop3Line() : "ここは艦隊八幡社の入口なのです。はちまんがご案内するのです。";
   startAction("jump",line);
 };
-document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじはこちらなのです。朝昼晩の運試しなのです。");
+document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
 document.getElementById("mGameBtn").onclick=()=>startAction("bow","CRいずもちゃんは準備中なのです。もう少し待ってほしいのです。");
 document.getElementById("mShopBtn").onclick=()=>openHachimanShop();
 document.querySelector(".app").addEventListener("pointerdown",(e)=>{
