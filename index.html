@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D ランキング連携 v1.1aa</title>
+<title>艦隊八幡社 Live2D ランキング連携 v1.1aaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -115,7 +115,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">Live2D ランキング連携 v1.1a</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">Live2D ランキング連携 v1.1aaa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -129,7 +129,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
 <section class="debugPanel" id="debugPanel">
-<h2>ランキング連携確認 v1.1a</h2>
+<h2>ランキング連携確認 v1.1aaa</h2>
 <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
 <div class="readout" id="readout">待機中……</div>
 <div class="debugBtns">
@@ -156,7 +156,7 @@ const MODEL_PATH="export/hachiman.model3.json";
 
 // Apps ScriptのWebアプリURLをここへ貼り付けてください。
 // 例：const RANKING_API_URL="https://script.google.com/macros/s/xxxxxxxxxxxx/exec";
-const RANKING_API_URL="";
+const RANKING_API_URL="https://script.google.com/macros/s/AKfycbybwOEImMHuiC_ze7mbzGLkJP3j9nj6HwO8WEzyWWOM_5PhW-ucjFtD8S_p-XblMS_hnw/exec";
 
 // 一時確認用：index.html?rankingUrl=AppsScriptのURL でも指定できます。
 const urlParams=new URLSearchParams(location.search);
@@ -230,10 +230,16 @@ async function loadRanking(){
     if(data && data.ok && Array.isArray(data.entries)){
       rankingEntries=data.entries;
       rankingLoadedAt=Date.now();
+      if(rankingEntries.length===0 && typeof speechText!=="undefined"){
+        speechText.textContent="ランキングは読めましたが、表示する記録がまだ無いようなのです。";
+      }
       return true;
     }
   }catch(err){
     console.warn("ranking load failed",err);
+    if(typeof speechText!=="undefined"){
+      speechText.textContent="ランキングの読み込みに失敗したのです。通信設定を確認してほしいのです。";
+    }
   }
   return false;
 }
@@ -387,7 +393,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.1 ランキング連携版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.1a ランキング連携版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     loadRanking().then(ok=>{
       if(ok && rankingEntries.length){
