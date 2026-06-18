@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D モーション読込テスト v0.8</title>
+<title>艦隊八幡社 Live2D 自動店番 v0.9</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -79,34 +79,30 @@ h1{
     linear-gradient(#c48d4f,#8f572b);
   transform:perspective(600px) rotateX(58deg);transform-origin:bottom;border-top:5px solid #4d2a1a;
 }
-.motionPanel{
-  position:absolute;z-index:28;left:50%;bottom:18px;transform:translateX(-50%);
-  display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;
-  width:min(980px,94vw);
-}
 button{
   padding:10px 12px;color:#fff7df;background:var(--red);border:3px solid var(--brown);
   border-radius:12px;box-shadow:0 4px 0 #5c2219;font-family:inherit;font-weight:900;cursor:pointer;
 }
 button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}
 button.green{background:var(--green);box-shadow:0 4px 0 #254537}
-button.motion{min-width:92px;background:#8f3f2f}
 .debugPanel{
-  position:absolute;z-index:50;left:14px;top:120px;width:380px;max-height:calc(100vh - 150px);
+  position:absolute;z-index:50;left:14px;top:120px;width:360px;max-height:calc(100vh - 150px);
   overflow:auto;padding:12px;color:#3f2a1e;background:rgba(255,249,232,.96);
   border:4px solid var(--brown);border-radius:16px;box-shadow:7px 7px 0 rgba(0,0,0,.22);
   display:none;
 }
 .debugPanel.open{display:block}
 .debugPanel h2{margin:0 0 8px;font-size:18px;color:var(--red)}
-.status,.measure,.motionInfo{
+.status,.measure{
   padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fff4d8;
   font-weight:900;line-height:1.45;margin-bottom:10px;font-size:12px;
 }
-.status small,.measure small,.motionInfo small{display:block;color:#7a5b42;word-break:break-all}
+.status small,.measure small{display:block;color:#7a5b42;word-break:break-all}
 .debugBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .mobileBar{display:none}
-
+.pcTinyMenu{
+  position:absolute;z-index:40;right:18px;bottom:18px;display:flex;gap:8px;
+}
 @media(max-width:900px){
   body{overflow:hidden}
   header{top:12px}
@@ -119,7 +115,7 @@ button.motion{min-width:92px;background:#8f3f2f}
   .counter{height:74px;width:68vw;left:40%;bottom:28px;border-radius:18px 18px 0 0}
   .floor{bottom:-80px;height:210px}
   .portalCards{display:none}
-  .motionPanel{display:none}
+  .pcTinyMenu{display:none}
   .mobileBar{
     display:flex;
     position:fixed;
@@ -148,7 +144,7 @@ button.motion{min-width:92px;background:#8f3f2f}
   <div class="wallPattern"></div>
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="subtitle">Live2D モーション読込テスト v0.8</div>
+    <div class="subtitle">Live2D 自動店番 v0.9</div>
   </header>
 
   <canvas id="stage"></canvas>
@@ -156,56 +152,46 @@ button.motion{min-width:92px;background:#8f3f2f}
 
   <div class="speech">
     <small>はちまん</small>
-    <span id="speechText">モーションデータを読み込んで、動きを確認するのです。</span>
+    <span id="speechText">いらっしゃいませなのです。艦隊八幡社の入口なのです。</span>
   </div>
 
   <div class="portalCards">
-    <div class="card" data-motion="mark_m01" data-say="mark_m01を再生するのです。長めのループ動作なのです。">
-      <div class="icon">壱</div><div class="title">mark_m01</div><div class="desc">10.4秒 / ループ</div>
+    <div class="card" data-say="おみくじはこちらなのです。朝昼晩で運勢を見ていくのです。" data-action="bow">
+      <div class="icon">⛩</div><div class="title">おみくじ</div><div class="desc">朝昼晩の運試し</div>
     </div>
-    <div class="card" data-motion="mark_m02" data-say="mark_m02を再生するのです。大きく動く確認なのです。">
-      <div class="icon">弐</div><div class="title">mark_m02</div><div class="desc">4.8秒 / ループ</div>
+    <div class="card" data-say="CRいずもちゃんはこちらなのです。神力充填なのです。" data-action="jump">
+      <div class="icon">🎰</div><div class="title">ゲーム</div><div class="desc">CRいずもちゃん</div>
     </div>
-    <div class="card" data-motion="mark_m03" data-say="mark_m03を再生するのです。短めの表情動作なのです。">
-      <div class="icon">参</div><div class="title">mark_m03</div><div class="desc">1.97秒 / ループ</div>
+    <div class="card" data-say="売店はこちらなのです。お守りと品物を並べるのです。" data-action="wave">
+      <div class="icon">🛍</div><div class="title">売店</div><div class="desc">艦隊八幡社商店</div>
     </div>
   </div>
 
   <div class="counter"></div>
   <div class="floor"></div>
 
-  <div class="motionPanel">
-    <button class="motion" data-motion="mark_m01">m01</button>
-    <button class="motion" data-motion="mark_m02">m02</button>
-    <button class="motion" data-motion="mark_m03">m03</button>
-    <button class="motion" data-motion="mark_m04">m04</button>
-    <button class="motion" data-motion="mark_m05">m05</button>
-    <button class="motion" data-motion="mark_m06">m06</button>
-    <button id="stopBtn" class="green">停止</button>
+  <div class="pcTinyMenu">
+    <button id="autoBtn" class="green">自動店番</button>
     <button id="debugBtn">確認</button>
   </div>
 
   <section class="debugPanel" id="debugPanel">
-    <h2>モーション確認</h2>
+    <h2>自動店番確認</h2>
     <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
-    <div class="motionInfo" id="motionInfo">モーション読込待ち……</div>
     <div class="measure" id="measure">計測待ち……</div>
     <div class="debugBtns">
       <button id="fitBtn" class="green">最適配置</button>
       <button id="boxBtn">赤枠</button>
-      <button id="softBtn">弱め</button>
-      <button id="normalBtn">通常</button>
+      <button id="testMouthBtn">口パク</button>
+      <button id="testWaveBtn">手ふり</button>
     </div>
   </section>
 
   <div class="mobileBar">
-    <button data-motion="mark_m01">m01</button>
-    <button data-motion="mark_m02">m02</button>
-    <button data-motion="mark_m03">m03</button>
-    <button data-motion="mark_m04">m04</button>
-    <button data-motion="mark_m05">m05</button>
-    <button data-motion="mark_m06">m06</button>
-    <button id="mStopBtn">停止</button>
+    <button id="mGuideBtn">案内</button>
+    <button id="mOmikujiBtn">おみくじ</button>
+    <button id="mGameBtn">ゲーム</button>
+    <button id="mShopBtn">売店</button>
     <button id="mDebugBtn">確認</button>
   </div>
 </div>
@@ -215,29 +201,33 @@ button.motion{min-width:92px;background:#8f3f2f}
 <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
 <script>
 const MODEL_PATH="export/hachiman.model3.json";
-const MOTION_FILES={
-  mark_m01:"mark_m01.motion3.json",
-  mark_m02:"mark_m02.motion3.json",
-  mark_m03:"mark_m03.motion3.json",
-  mark_m04:"mark_m04.motion3.json",
-  mark_m05:"mark_m05.motion3.json",
-  mark_m06:"mark_m06.motion3.json"
-};
 
 const canvas=document.getElementById("stage");
 const overlay=document.getElementById("overlay");
 const speechText=document.getElementById("speechText");
 const statusEl=document.getElementById("status");
 const measureEl=document.getElementById("measure");
-const motionInfoEl=document.getElementById("motionInfo");
 const debugPanel=document.getElementById("debugPanel");
 
 let app=null,model=null,core=null;
-let paramList=[],defaults={},showBox=false;
-let motions={},activeMotion=null,motionStrength=1.0;
+let params=[],defaults={},showBox=false;
+let action=null;
+let autoMode=true;
+let nextAutoAt=0;
+let currentLook={x:0,y:0}, targetLook={x:0,y:0};
+let mouthUntil=0;
+let mouthLevel=0;
+
+const idleLines=[
+  "いらっしゃいませなのです。艦隊八幡社の入口なのです。",
+  "今日も店番中なのです。ゆっくり見ていってほしいのです。",
+  "おみくじ、ゲーム、売店へ案内できるのです。",
+  "はちまんは、ただいま自動店番中なのです。",
+  "艦隊八幡社、開店の儀なのです。",
+  "気になる札を選んでほしいのです。"
+];
 
 function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
-function setMotionInfo(lines){motionInfoEl.innerHTML=lines.map(x=>"<small>"+x+"</small>").join("")}
 function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
 function idToString(id){if(id==null)return"";if(typeof id==="string")return id;if(id.s)return id.s;if(id.id)return id.id;if(id._id)return id._id;if(id.toString)return id.toString();return String(id)}
 function collectParams(){
@@ -248,7 +238,21 @@ function collectParams(){
 }
 function getV(id,i){try{if(core&&core.getParameterValueById)return Number(core.getParameterValueById(id))}catch(e){}try{if(core&&core.getParameterValue)return Number(core.getParameterValue(i))}catch(e){}return 0}
 function setV(id,v,i){try{if(core&&core.setParameterValueById){core.setParameterValueById(id,Number(v));return true}}catch(e){}try{if(core&&core.setParameterValue){core.setParameterValue(i,Number(v));return true}}catch(e){}return false}
-function resetParams(){paramList.forEach(p=>{if(defaults[p.id]!=null)setV(p.id,defaults[p.id],p.index)})}
+function findP(words){
+  const ws=words.map(w=>w.toLowerCase());
+  return params.find(p=>ws.every(w=>p.id.toLowerCase().includes(w)));
+}
+function setP(words,v){
+  const p=findP(words);
+  if(p)setV(p.id,v,p.index);
+}
+function setExact(id,v){
+  const p=params.find(p=>p.id===id);
+  if(p)setV(p.id,v,p.index);
+}
+function resetParams(){
+  params.forEach(p=>{if(defaults[p.id]!=null)setV(p.id,defaults[p.id],p.index)});
+}
 function isMobile(){return window.innerWidth<=900}
 function placeModel(){
   if(!model||!app)return;
@@ -284,7 +288,8 @@ function measure(){
   info.push("renderer： "+Math.round(app.renderer.width)+" × "+Math.round(app.renderer.height));
   info.push("model.x/y： "+Math.round(model.x)+" / "+Math.round(model.y));
   info.push("scale： "+model.scale.x.toFixed(3));
-  if(activeMotion) info.push("再生中： "+activeMotion.name+" / "+activeMotion.time.toFixed(2)+"s");
+  info.push("action： "+(action?action.name:"idle"));
+  info.push("params： "+params.length);
   if(b){
     info.push("bounds： "+Math.round(b.x)+" / "+Math.round(b.y)+" / "+Math.round(b.width)+" / "+Math.round(b.height));
     if(showBox){
@@ -298,113 +303,129 @@ function measure(){
   }
   measureEl.innerHTML=info.map(x=>"<small>"+x+"</small>").join("");
 }
-function parseSegments(segments){
-  const keys=[];
-  if(!Array.isArray(segments)||segments.length<2)return keys;
-  let i=0;
-  keys.push({t:Number(segments[0]),v:Number(segments[1])});
-  i=2;
-  while(i<segments.length){
-    const type=segments[i++];
-    if(type===0){
-      const t=Number(segments[i++]),v=Number(segments[i++]);
-      keys.push({t,v});
-    }else if(type===1){
-      const c1t=Number(segments[i++]),c1v=Number(segments[i++]);
-      const c2t=Number(segments[i++]),c2v=Number(segments[i++]);
-      const t=Number(segments[i++]),v=Number(segments[i++]);
-      keys.push({t,v,c1t,c1v,c2t,c2v,bezier:true});
-    }else if(type===2){
-      const t=Number(segments[i++]),v=Number(segments[i++]);
-      keys.push({t,v,stepped:true});
-    }else if(type===3){
-      const t=Number(segments[i++]),v=Number(segments[i++]);
-      keys.push({t,v});
-    }else{
-      break;
-    }
-  }
-  return keys.filter(k=>Number.isFinite(k.t)&&Number.isFinite(k.v)).sort((a,b)=>a.t-b.t);
+function speak(text,duration=1600){
+  speechText.textContent=text;
+  mouthUntil=performance.now()+duration;
 }
-function sampleKeys(keys,t){
-  if(!keys.length)return 0;
-  if(t<=keys[0].t)return keys[0].v;
-  for(let i=1;i<keys.length;i++){
-    const a=keys[i-1],b=keys[i];
-    if(t<=b.t){
-      if(a.stepped)return a.v;
-      const span=Math.max(0.0001,b.t-a.t);
-      const u=Math.max(0,Math.min(1,(t-a.t)/span));
-      const smooth=u*u*(3-2*u);
-      return a.v+(b.v-a.v)*smooth;
-    }
-  }
-  return keys[keys.length-1].v;
+function startAction(name,text){
+  action={name,start:performance.now()};
+  if(text)speak(text,1800);
 }
-function buildMotion(raw,name){
-  const curves=[];
-  (raw.Curves||[]).forEach(c=>{
-    if(c.Target==="Parameter"){
-      const p=paramList.find(x=>x.id===c.Id);
-      if(p)curves.push({id:c.Id,index:p.index,keys:parseSegments(c.Segments)});
-    }
-  });
-  return {
-    name,
-    duration:(raw.Meta&&Number(raw.Meta.Duration))||3,
-    loop:!!(raw.Meta&&raw.Meta.Loop),
-    curveCount:(raw.Meta&&raw.Meta.CurveCount)||curves.length,
-    appliedCurves:curves.length,
-    curves
-  };
-}
-async function loadMotions(){
-  const loaded=[];
-  for(const name of Object.keys(MOTION_FILES)){
-    try{
-      const res=await fetch(MOTION_FILES[name],{cache:"no-store"});
-      if(!res.ok)throw new Error(res.status+" "+res.statusText);
-      const raw=await res.json();
-      motions[name]=buildMotion(raw,name);
-      loaded.push(name+"：OK / "+motions[name].duration+"s / 適用 "+motions[name].appliedCurves+"曲線");
-    }catch(e){
-      loaded.push(name+"：読込失敗 "+e.message);
-    }
-  }
-  setMotionInfo(loaded);
-}
-function playMotion(name){
-  if(!motions[name]){
-    speechText.textContent=name+" はまだ読み込めていないのです。";
-    return;
-  }
-  resetParams();
-  activeMotion={...motions[name],start:performance.now(),time:0};
-  speechText.textContent=name+" を再生するのです。動きの感触を見てほしいのです。";
-}
-function stopMotion(){
-  activeMotion=null;
-  resetParams();
+function stopAction(){
+  action=null;
   placeModel();
-  speechText.textContent="停止しましたのです。";
+}
+function randomAuto(){
+  const r=Math.random();
+  if(r<0.30){
+    speak(idleLines[Math.floor(Math.random()*idleLines.length)],1600);
+  }else if(r<0.50){
+    startAction("look",null);
+  }else if(r<0.68){
+    startAction("smallJump","ぴょこっと店番するのです。");
+  }else if(r<0.83){
+    startAction("smallWave","こちらへどうぞなのです。");
+  }else{
+    startAction("bow","よろしくお願いいたしますなのです。");
+  }
+  nextAutoAt=performance.now()+3800+Math.random()*4300;
+}
+function applyIdle(t){
+  const breath=Math.sin(t*2.0)*0.45;
+  const sway=Math.sin(t*1.15)*2.2;
+  const slow=Math.sin(t*0.55)*1.0;
+
+  setExact("ParamBreath",breath);
+  setExact("ParamBodyAngleZ",sway);
+  setExact("ParamBodyAngleX",slow);
+  setExact("ParamAngleZ",sway*0.38);
+  setExact("ParamAngleX",currentLook.x+Math.sin(t*0.8)*1.1);
+  setExact("ParamAngleY",currentLook.y+Math.sin(t*0.9)*1.0);
+  setExact("ParamEyeBallX",currentLook.x/30);
+  setExact("ParamEyeBallY",currentLook.y/30);
+
+  setExact("ParamArmL",-1.2+Math.sin(t*1.3)*0.8);
+  setExact("ParamArmR",-1.0+Math.sin(t*1.25+0.8)*0.8);
+}
+function applyBlink(now){
+  const cycle=(now/1000)%5.7;
+  let v=1;
+  if(cycle>4.95&&cycle<5.08)v=0;
+  if(cycle>5.08&&cycle<5.18)v=0.2;
+  setExact("EyeBlink",v);
+  setExact("ParamEyeLOpen",v);
+  setExact("ParamEyeROpen",v);
+}
+function applyMouth(now,t){
+  if(now<mouthUntil){
+    mouthLevel=(Math.sin(t*18)>0?0.75:0.25)+Math.sin(t*31)*0.08;
+  }else{
+    mouthLevel*=0.85;
+  }
+  setExact("ParamMouthOpenY",Math.max(0,Math.min(1,mouthLevel)));
+  setExact("ParamMouthForm",Math.sin(t*8)*0.35);
+}
+function applyAction(now,t){
+  if(!action)return;
+  const a=(now-action.start)/1000;
+  if(action.name==="smallJump"){
+    const b=Math.max(0,Math.sin(a*Math.PI*2.2));
+    const baseY=isMobile()?492:app.renderer.height*0.70;
+    model.y=baseY-b*(isMobile()?14:30);
+    model.scale.y=model.scale.x*(1+b*0.05);
+    setExact("ParamBodyAngleY",b*7);
+    setExact("ParamArmL",b*5);
+    setExact("ParamArmR",b*5);
+    if(a>1.1){model.scale.y=model.scale.x;stopAction();}
+  }
+  if(action.name==="smallWave"){
+    const b=Math.sin(a*10);
+    setExact("ParamArmR",8+b*12);
+    setExact("ParamArmL",-2+Math.sin(a*5)*3);
+    setExact("ParamBodyAngleZ",Math.sin(a*4)*5);
+    setExact("ParamAngleZ",Math.sin(a*4)*2.5);
+    if(a>1.8)stopAction();
+  }
+  if(action.name==="bow"){
+    const b=Math.sin(Math.min(1,a/1.25)*Math.PI);
+    setExact("ParamAngleY",-12*b);
+    setExact("ParamBodyAngleX",-7*b);
+    setExact("ParamArmL",3*b);
+    setExact("ParamArmR",3*b);
+    if(a>1.35)stopAction();
+  }
+  if(action.name==="look"){
+    if(a<0.1){
+      targetLook.x=(Math.random()*2-1)*8;
+      targetLook.y=(Math.random()*2-1)*5;
+    }
+    if(a>1.4){
+      targetLook.x=0;
+      targetLook.y=0;
+    }
+    if(a>2.2)stopAction();
+  }
 }
 function tick(){
   requestAnimationFrame(tick);
-  if(activeMotion&&model){
-    const elapsed=(performance.now()-activeMotion.start)/1000;
-    let t=elapsed;
-    if(activeMotion.loop) t=t%activeMotion.duration;
-    if(!activeMotion.loop&&t>activeMotion.duration){stopMotion();return;}
-    activeMotion.time=t;
-    resetParams();
-    activeMotion.curves.forEach(c=>{
-      const base=defaults[c.id]||0;
-      const raw=sampleKeys(c.keys,t);
-      const v=base+(raw-base)*motionStrength;
-      setV(c.id,v,c.index);
-    });
-    measure();
+  if(!model)return;
+  const now=performance.now();
+  const t=now/1000;
+
+  resetParams();
+
+  currentLook.x += (targetLook.x-currentLook.x)*0.045;
+  currentLook.y += (targetLook.y-currentLook.y)*0.045;
+
+  applyIdle(t);
+  applyBlink(now);
+  applyMouth(now,t);
+  applyAction(now,t);
+
+  if(autoMode && now>nextAutoAt){
+    randomAuto();
   }
+  measure();
 }
 async function init(){
   try{
@@ -415,12 +436,12 @@ async function init(){
     model=await C.from(MODEL_PATH,{autoInteract:true});
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
-    paramList=collectParams();
-    paramList.forEach(p=>defaults[p.id]=getV(p.id,p.index));
+
+    params=collectParams();
+    params.forEach(p=>defaults[p.id]=getV(p.id,p.index));
     placeModel();
-    setStatus("モデル読み込み成功。モーションを読み込み中……","取得パラメータ："+paramList.length+"件");
-    await loadMotions();
-    setStatus("読み込み成功。v0.8 モーション確認中です。","取得パラメータ："+paramList.length+"件");
+    setStatus("読み込み成功。v0.9 自動店番中です。","取得パラメータ："+params.length+"件");
+    nextAutoAt=performance.now()+2200;
     tick();
     window.addEventListener("resize",placeModel);
   }catch(e){
@@ -429,17 +450,22 @@ async function init(){
     speechText.textContent="Live2Dの読み込みに失敗したのです。";
   }
 }
-document.querySelectorAll("[data-motion]").forEach(btn=>{
-  btn.addEventListener("click",()=>playMotion(btn.dataset.motion));
+document.querySelectorAll(".card").forEach(card=>{
+  card.addEventListener("click",()=>{
+    startAction(card.dataset.action,card.dataset.say);
+  });
 });
-document.getElementById("stopBtn").onclick=stopMotion;
-document.getElementById("mStopBtn").onclick=stopMotion;
+document.getElementById("autoBtn").onclick=()=>{autoMode=!autoMode;speak(autoMode?"自動店番を再開したのです。":"自動店番を一時停止したのです。");};
 document.getElementById("debugBtn").onclick=()=>debugPanel.classList.toggle("open");
 document.getElementById("mDebugBtn").onclick=()=>debugPanel.classList.toggle("open");
 document.getElementById("fitBtn").onclick=placeModel;
 document.getElementById("boxBtn").onclick=()=>{showBox=!showBox;measure()};
-document.getElementById("softBtn").onclick=()=>{motionStrength=0.55;speechText.textContent="モーションを弱めにしたのです。"};
-document.getElementById("normalBtn").onclick=()=>{motionStrength=1.0;speechText.textContent="モーションを通常に戻したのです。"};
+document.getElementById("testMouthBtn").onclick=()=>speak("あいうえお、口パク確認なのです。",2200);
+document.getElementById("testWaveBtn").onclick=()=>startAction("smallWave","手をふる確認なのです。");
+document.getElementById("mGuideBtn").onclick=()=>startAction("smallJump","ここは艦隊八幡社の入口なのです。");
+document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは朝昼晩で引けるようにしたいのです。");
+document.getElementById("mGameBtn").onclick=()=>startAction("smallJump","ゲームはCRいずもちゃんへ案内する予定なのです。");
+document.getElementById("mShopBtn").onclick=()=>startAction("smallWave","売店では、お守りや品物を並べるのです。");
 init();
 </script>
 </body>
