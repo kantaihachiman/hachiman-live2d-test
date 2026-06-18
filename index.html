@@ -3,273 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社 Live2D パラメータ直接テスト v0.9b</title>
+<title>艦隊八幡社 Live2D 自動店番 v0.9cc</title>
 <style>
 *{box-sizing:border-box}
 :root{
   --brown:#4b281b;
+  --dark:#24130f;
+  --wood:#a76332;
+  --gold:#e8bf67;
   --cream:#fff5dc;
+  --paper:#fff9ea;
   --red:#a83229;
   --green:#3f7a61;
 }
-html,body{
-  margin:0;width:100%;height:100%;
-  font-family:"Yu Gothic","Meiryo",sans-serif;
-  background:#20110e;color:var(--cream);
-  overflow:hidden;
-}
+html,body{margin:0;width:100%;min-height:100%;font-family:"Yu Gothic","Meiryo",sans-serif;color:var(--cream);background:#20110e}
+body{overflow:hidden}
 .app{
   position:relative;width:100vw;height:100vh;overflow:hidden;
   background:
     radial-gradient(circle at 50% 20%,rgba(255,226,145,.18),transparent 34%),
     linear-gradient(180deg,#25120f 0%,#4b281b 50%,#8a581b 100%);
 }
+.wallPattern{
+  position:absolute;inset:0;opacity:.18;pointer-events:none;
+  background-image:
+    linear-gradient(90deg,rgba(255,244,216,.12) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,244,216,.08) 1px,transparent 1px);
+  background-size:38px 38px;
+  mask-image:linear-gradient(180deg,transparent 0%,#000 16%,#000 78%,transparent 100%);
+}
 header{
-  position:absolute;z-index:20;top:12px;left:0;right:0;text-align:center;
+  position:absolute;z-index:20;top:14px;left:0;right:0;text-align:center;pointer-events:none;
 }
 h1{
-  margin:0;font-size:clamp(30px,5vw,58px);letter-spacing:.08em;
-  color:#fff2d2;text-shadow:4px 4px 0 rgba(60,26,16,.85);
+  margin:0;font-size:clamp(34px,6vw,68px);letter-spacing:.08em;
+  color:#fff2d2;text-shadow:4px 4px 0 rgba(60,26,16,.85),0 0 18px rgba(255,223,145,.25);
 }
-.sub{margin-top:6px;font-weight:900;color:#f8dfaa}
-#stage{position:absolute;inset:0;width:100vw;height:100vh;z-index:5}
+.subtitle{
+  margin-top:7px;font-weight:900;font-size:clamp(13px,2.2vw,18px);
+  color:#f8dfaa;text-shadow:2px 2px 0 rgba(40,20,14,.75);
+}
+#stage{position:absolute;inset:0;width:100vw;height:100vh;z-index:8}
+#overlay{position:absolute;inset:0;width:100vw;height:100vh;z-index:9;pointer-events:none}
 .speech{
-  position:absolute;z-index:22;top:110px;right:4vw;width:min(440px,38vw);
-  padding:12px 16px;color:#3f2a1e;background:#fff9ea;
-  border:4px solid var(--brown);border-radius:18px;
-  box-shadow:7px 7px 0 rgba(0,0,0,.22);
-  font-weight:900;line-height:1.55;
+  position:absolute;z-index:22;top:128px;right:4vw;width:min(430px,36vw);
+  padding:14px 18px;color:#3f2a1e;background:rgba(255,249,232,.96);
+  border:4px solid var(--brown);border-radius:18px;box-shadow:7px 7px 0 rgba(0,0,0,.22);
+  font-weight:900;line-height:1.65;
 }
 .speech small{display:block;color:#855e43;margin-bottom:4px;font-size:12px}
-.panel{
-  position:absolute;z-index:40;left:14px;top:110px;width:390px;
-  max-height:calc(100vh - 130px);overflow:auto;
-  padding:12px;color:#3f2a1e;background:rgba(255,249,232,.97);
-  border:4px solid var(--brown);border-radius:16px;
-  box-shadow:7px 7px 0 rgba(0,0,0,.22);
+.portalCards{
+  position:absolute;z-index:12;left:50%;bottom:86px;transform:translateX(-50%);
+  width:min(980px,88vw);display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
 }
-.panel h2{margin:0 0 8px;color:var(--red);font-size:18px}
-.status,.readout{
-  padding:8px;border:2px solid #7a4a2c;border-radius:10px;
-  background:#fff4d8;font-weight:900;line-height:1.45;margin-bottom:10px;font-size:12px;
+.card{
+  min-height:110px;padding:16px 14px;border:4px solid var(--brown);border-radius:18px;
+  background:linear-gradient(180deg,#fff8e8,#f2d38b);
+  color:#3c251a;box-shadow:0 8px 0 rgba(62,30,19,.55);
+  text-align:center;font-weight:900;cursor:pointer;user-select:none;
 }
-.status small,.readout small{display:block;color:#7a5b42;word-break:break-all}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-button{
-  padding:9px 8px;color:#fff7df;background:var(--red);
-  border:3px solid var(--brown);border-radius:10px;
-  box-shadow:0 3px 0 #5c2219;
-  font-family:inherit;font-weight:900;cursor:pointer;
-}
-button.green{background:var(--green);box-shadow:0 3px 0 #254537}
-button:active{transform:translateY(2px);box-shadow:0 1px 0 #5c2219}
-.control{
-  padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fffdf3;margin-bottom:8px;
-}
-.control b{display:block;font-size:13px;margin-bottom:5px}
-.row{display:grid;grid-template-columns:1fr 58px;gap:8px;align-items:center}
-input[type=range]{width:100%}
-output{text-align:right;font-size:12px;font-weight:900}
+.card:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(62,30,19,.55)}
+.card .icon{font-size:30px;margin-bottom:6px}
+.card .title{font-size:20px;letter-spacing:.05em}
+.card .desc{font-size:12px;margin-top:6px;color:#6e4b34;line-height:1.4}
 .counter{
-  position:absolute;z-index:2;left:50%;bottom:0;transform:translateX(-50%);
+  position:absolute;z-index:3;left:50%;bottom:0;transform:translateX(-50%);
   width:min(1040px,100vw);height:120px;border:5px solid var(--brown);border-bottom:0;
   border-radius:24px 24px 0 0;background:linear-gradient(180deg,#efc466 0 28%,#a76232 28% 100%);
+  box-shadow:0 -10px 0 rgba(55,25,15,.28) inset;
+}
+.floor{
+  position:absolute;z-index:1;left:-10%;right:-10%;bottom:-92px;height:250px;
+  background:
+    repeating-linear-gradient(90deg,#b87938 0 70px,#a86931 70px 76px),
+    linear-gradient(#c48d4f,#8f572b);
+  transform:perspective(600px) rotateX(58deg);transform-origin:bottom;border-top:5px solid #4d2a1a;
+}
+button{
+  padding:10px 12px;color:#fff7df;background:var(--red);border:3px solid var(--brown);
+  border-radius:12px;box-shadow:0 4px 0 #5c2219;font-family:inherit;font-weight:900;cursor:pointer;
+}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}
+button.green{background:var(--green);box-shadow:0 4px 0 #254537}
+.debugPanel{
+  position:absolute;z-index:50;left:14px;top:120px;width:360px;max-height:calc(100vh - 150px);
+  overflow:auto;padding:12px;color:#3f2a1e;background:rgba(255,249,232,.96);
+  border:4px solid var(--brown);border-radius:16px;box-shadow:7px 7px 0 rgba(0,0,0,.22);
+  display:none;
+}
+.debugPanel.open{display:block}
+.debugPanel h2{margin:0 0 8px;font-size:18px;color:var(--red)}
+.status,.measure{
+  padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fff4d8;
+  font-weight:900;line-height:1.45;margin-bottom:10px;font-size:12px;
+}
+.status small,.measure small{display:block;color:#7a5b42;word-break:break-all}
+.debugBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mobileBar{display:none}
+.pcTinyMenu{
+  position:absolute;z-index:40;right:18px;bottom:18px;display:flex;gap:8px;
 }
 @media(max-width:900px){
-  h1{font-size:31px}.sub{font-size:12px}
-  .speech{left:12px;right:12px;top:82px;width:auto;font-size:12px}
-  .panel{left:10px;right:10px;top:168px;width:auto;max-height:calc(100vh - 180px)}
-  .counter{height:70px;width:72vw;left:40%;bottom:28px}
+  body{overflow:hidden}
+  header{top:12px}
+  h1{font-size:36px}
+  .subtitle{font-size:12px}
+  .speech{
+    left:14px;right:14px;top:94px;width:auto;min-height:70px;
+    padding:10px 12px;font-size:13px;line-height:1.55;
+  }
+  .counter{height:74px;width:68vw;left:40%;bottom:28px;border-radius:18px 18px 0 0}
+  .floor{bottom:-80px;height:210px}
+  .portalCards{display:none}
+  .pcTinyMenu{display:none}
+  .mobileBar{
+    display:flex;
+    position:fixed;
+    z-index:60;
+    right:9px;
+    bottom:16px;
+    width:92px;
+    flex-direction:column;
+    gap:7px;
+  }
+  .mobileBar button{
+    flex:none;
+    width:92px;
+    padding:9px 5px;
+    font-size:12px;
+    border-radius:12px;
+  }
+  .debugPanel{
+    left:10px;right:10px;top:92px;width:auto;max-height:calc(100vh - 150px);
+  }
 }
 </style>
 </head>
 <body>
 <div class="app">
+  <div class="wallPattern"></div>
   <header>
     <h1>艦隊八幡社</h1>
-    <div class="sub">Live2D パラメータ直接テスト v0.9b</div>
+    <div class="subtitle">Live2D 自動店番 v0.9c</div>
   </header>
 
   <canvas id="stage"></canvas>
+  <canvas id="overlay"></canvas>
 
   <div class="speech">
     <small>はちまん</small>
-    <span id="speechText">パラメータが直接動くか確認するのです。</span>
+    <span id="speechText">いらっしゃいませなのです。腕の動きを修正したのです。</span>
+  </div>
+
+  <div class="portalCards">
+    <div class="card" data-say="おみくじはこちらなのです。朝昼晩で運勢を見ていくのです。" data-action="bow">
+      <div class="icon">⛩</div><div class="title">おみくじ</div><div class="desc">朝昼晩の運試し</div>
+    </div>
+    <div class="card" data-say="CRいずもちゃんはこちらなのです。神力充填なのです。" data-action="jump">
+      <div class="icon">🎰</div><div class="title">ゲーム</div><div class="desc">CRいずもちゃん</div>
+    </div>
+    <div class="card" data-say="売店はこちらなのです。お守りと品物を並べるのです。" data-action="wave">
+      <div class="icon">🛍</div><div class="title">売店</div><div class="desc">艦隊八幡社商店</div>
+    </div>
   </div>
 
   <div class="counter"></div>
+  <div class="floor"></div>
 
-  <section class="panel">
-    <h2>直接テスト</h2>
+  <div class="pcTinyMenu">
+    <button id="autoBtn" class="green">自動店番</button>
+    <button id="debugBtn">確認</button>
+  </div>
+
+  <section class="debugPanel" id="debugPanel">
+    <h2>自動店番確認 v0.9c</h2>
     <div class="status" id="status">読み込み準備中……<small>モデルパス：export/hachiman.model3.json</small></div>
-    <div class="readout" id="readout">待機中……</div>
-
-    <div class="btns">
-      <button id="rightUpBtn">右腕 上げ</button>
-      <button id="rightDownBtn">右腕 下げ</button>
-      <button id="leftUpBtn">左腕 上げ</button>
-      <button id="leftDownBtn">左腕 下げ</button>
-      <button id="mouthOpenBtn">口 開く</button>
-      <button id="mouthCloseBtn">口 閉じる</button>
-      <button id="autoMouthBtn" class="green">口パク連続</button>
-      <button id="resetBtn">リセット</button>
-    </div>
-
-    <div class="control">
-      <b>Param / みぎうで</b>
-      <div class="row"><input id="paramRange" type="range" min="-30" max="30" step="1" value="0"><output id="paramOut">0</output></div>
-    </div>
-
-    <div class="control">
-      <b>Param2 / ひだりうで</b>
-      <div class="row"><input id="param2Range" type="range" min="-30" max="30" step="1" value="0"><output id="param2Out">0</output></div>
-    </div>
-
-    <div class="control">
-      <b>ParamMouthOpenY / 口開閉</b>
-      <div class="row"><input id="mouthRange" type="range" min="0" max="1" step="0.01" value="0"><output id="mouthOut">0</output></div>
-    </div>
-
-    <div class="control">
-      <b>ParamMouthForm / 口変形</b>
-      <div class="row"><input id="mouthFormRange" type="range" min="-1" max="1" step="0.01" value="0"><output id="mouthFormOut">0</output></div>
+    <div class="measure" id="measure">計測待ち……</div>
+    <div class="debugBtns">
+      <button id="fitBtn" class="green">最適配置</button>
+      <button id="boxBtn">赤枠</button>
+      <button id="testMouthBtn">口パク強制</button>
+      <button id="testWaveBtn">手ふり強制</button>
     </div>
   </section>
+
+  <div class="mobileBar">
+    <button id="mGuideBtn">案内</button>
+    <button id="mOmikujiBtn">おみくじ</button>
+    <button id="mGameBtn">ゲーム</button>
+    <button id="mShopBtn">売店</button>
+    <button id="mDebugBtn">確認</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
-
 <script>
 const MODEL_PATH="export/hachiman.model3.json";
 
 const canvas=document.getElementById("stage");
-const statusEl=document.getElementById("status");
-const readout=document.getElementById("readout");
+const overlay=document.getElementById("overlay");
 const speechText=document.getElementById("speechText");
+const statusEl=document.getElementById("status");
+const measureEl=document.getElementById("measure");
+const debugPanel=document.getElementById("debugPanel");
 
-const paramRange=document.getElementById("paramRange");
-const param2Range=document.getElementById("param2Range");
-const mouthRange=document.getElementById("mouthRange");
-const mouthFormRange=document.getElementById("mouthFormRange");
-const paramOut=document.getElementById("paramOut");
-const param2Out=document.getElementById("param2Out");
-const mouthOut=document.getElementById("mouthOut");
-const mouthFormOut=document.getElementById("mouthFormOut");
+let app=null,model=null,core=null;
+let params=[],defaults={},showBox=false;
+let action=null;
+let autoMode=true;
+let nextAutoAt=0;
+let currentLook={x:0,y:0}, targetLook={x:0,y:0};
+let mouthUntil=0;
+let mouthLevel=0;
 
-let app=null;
-let model=null;
-let core=null;
-let params=[];
-let directValues={
-  Param:0,
-  Param2:0,
-  ParamMouthOpenY:0,
-  ParamMouthForm:0
-};
-let autoMouth=false;
+const idleLines=[
+  "いらっしゃいませなのです。腕の動きを修正したのです。",
+  "今日も店番中なのです。ゆっくり見ていってほしいのです。",
+  "おみくじ、ゲーム、売店へ案内できるのです。",
+  "はちまんは、ただいま自動店番中なのです。",
+  "艦隊八幡社、開店の儀なのです。",
+  "気になる札を選んでほしいのです。"
+];
 
-function setStatus(text,detail){
-  statusEl.innerHTML=text+"<small>モデルパス："+MODEL_PATH+"</small>"+(detail?"<small>"+detail+"</small>":"");
-}
-function getClass(){
-  if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;
-  if(window.Live2DModel)return window.Live2DModel;
-  if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;
-  return null;
-}
-function idToString(id){
-  if(id==null)return"";
-  if(typeof id==="string")return id;
-  if(id.s)return id.s;
-  if(id.id)return id.id;
-  if(id._id)return id._id;
-  if(id.toString)return id.toString();
-  return String(id);
-}
+function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
+function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
+function idToString(id){if(id==null)return"";if(typeof id==="string")return id;if(id.s)return id.s;if(id.id)return id.id;if(id._id)return id._id;if(id.toString)return id.toString();return String(id)}
 function collectParams(){
   core=model&&model.internalModel&&model.internalModel.coreModel;
   const out=[];
-  try{
-    if(core&&core.getParameterCount&&core.getParameterId){
-      for(let i=0;i<core.getParameterCount();i++){
-        out.push({index:i,id:idToString(core.getParameterId(i))});
-      }
-    }
-  }catch(e){}
+  try{if(core&&core.getParameterCount&&core.getParameterId){for(let i=0;i<core.getParameterCount();i++)out.push({index:i,id:idToString(core.getParameterId(i))})}}catch(e){}
   return out.filter(p=>p.id);
 }
-function findParam(id){
-  return params.find(p=>p.id===id);
+function getV(id,i){try{if(core&&core.getParameterValueById)return Number(core.getParameterValueById(id))}catch(e){}try{if(core&&core.getParameterValue)return Number(core.getParameterValue(i))}catch(e){}return 0}
+function setV(id,v,i){try{if(core&&core.setParameterValueById){core.setParameterValueById(id,Number(v));return true}}catch(e){}try{if(core&&core.setParameterValue){core.setParameterValue(i,Number(v));return true}}catch(e){}return false}
+function findP(words){
+  const ws=words.map(w=>w.toLowerCase());
+  return params.find(p=>ws.every(w=>p.id.toLowerCase().includes(w)));
 }
-function trySet(id,value){
-  const p=findParam(id);
-  let ok=false;
-  try{
-    if(core&&core.setParameterValueById){
-      core.setParameterValueById(id,Number(value));
-      ok=true;
-    }
-  }catch(e){}
-  try{
-    if(p&&core&&core.setParameterValue){
-      core.setParameterValue(p.index,Number(value));
-      ok=true;
-    }
-  }catch(e){}
-  try{
-    if(model&&model.internalModel&&model.internalModel.coreModel&&p){
-      model.internalModel.coreModel.setParameterValueById(id,Number(value));
-      ok=true;
-    }
-  }catch(e){}
-  return ok;
+function setP(words,v){
+  const p=findP(words);
+  if(p)setV(p.id,v,p.index);
 }
-function tryGet(id){
-  const p=findParam(id);
-  try{
-    if(core&&core.getParameterValueById)return Number(core.getParameterValueById(id));
-  }catch(e){}
-  try{
-    if(p&&core&&core.getParameterValue)return Number(core.getParameterValue(p.index));
-  }catch(e){}
-  return NaN;
+function setExact(id,v){
+  const p=params.find(p=>p.id===id);
+  if(p)setV(p.id,v,p.index);
 }
-function applyDirect(){
-  trySet("Param",directValues.Param);
-  trySet("Param2",directValues.Param2);
-  trySet("ParamMouthOpenY",directValues.ParamMouthOpenY);
-  trySet("ParamMouthForm",directValues.ParamMouthForm);
-
-  paramRange.value=directValues.Param;
-  param2Range.value=directValues.Param2;
-  mouthRange.value=directValues.ParamMouthOpenY;
-  mouthFormRange.value=directValues.ParamMouthForm;
-
-  paramOut.value=Number(directValues.Param).toFixed(0);
-  param2Out.value=Number(directValues.Param2).toFixed(0);
-  mouthOut.value=Number(directValues.ParamMouthOpenY).toFixed(2);
-  mouthFormOut.value=Number(directValues.ParamMouthForm).toFixed(2);
-
-  const ids=["Param","Param2","ParamMouthOpenY","ParamMouthForm","ParamBreath","ParamBodyAngleX","ParamBodyAngleY","ParamBodyAngleZ"];
-  const lines=[
-    "登録パラメータ数："+params.length,
-    "Paramあり："+(!!findParam("Param")),
-    "Param2あり："+(!!findParam("Param2")),
-    "ParamMouthOpenYあり："+(!!findParam("ParamMouthOpenY")),
-    "ParamMouthFormあり："+(!!findParam("ParamMouthForm"))
-  ];
-  ids.forEach(id=>{
-    const v=tryGet(id);
-    lines.push(id+"： "+(Number.isFinite(v)?v.toFixed(3):"取得不可"));
-  });
-  readout.innerHTML=lines.map(x=>"<small>"+x+"</small>").join("");
+function resetParams(){
+  params.forEach(p=>{if(defaults[p.id]!=null)setV(p.id,defaults[p.id],p.index)});
 }
+function isMobile(){return window.innerWidth<=900}
 function placeModel(){
   if(!model||!app)return;
   const w=app.renderer.width,h=app.renderer.height;
-  if(window.innerWidth<=900){
+  if(isMobile()){
     model.scale.set(0.050);
     model.x=185;
     model.y=492;
@@ -279,66 +267,217 @@ function placeModel(){
     model.y=h*0.70;
   }
   if(model.anchor)model.anchor.set(0.5,0.92);
+  measure();
+}
+function resizeOverlay(){
+  const dpr=window.devicePixelRatio||1;
+  overlay.width=Math.floor(window.innerWidth*dpr);
+  overlay.height=Math.floor(window.innerHeight*dpr);
+  overlay.style.width=window.innerWidth+"px";
+  overlay.style.height=window.innerHeight+"px";
+  overlay.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
+}
+function measure(){
+  if(!model||!app)return;
+  resizeOverlay();
+  const ctx=overlay.getContext("2d");
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  let b=null;try{b=model.getBounds()}catch(e){}
+  const info=[];
+  info.push("viewport： "+window.innerWidth+" × "+window.innerHeight);
+  info.push("renderer： "+Math.round(app.renderer.width)+" × "+Math.round(app.renderer.height));
+  info.push("model.x/y： "+Math.round(model.x)+" / "+Math.round(model.y));
+  info.push("scale： "+model.scale.x.toFixed(3));
+  info.push("action： "+(action?action.name:"idle"));
+  info.push("params： "+params.length);
+  if(b){
+    info.push("bounds： "+Math.round(b.x)+" / "+Math.round(b.y)+" / "+Math.round(b.width)+" / "+Math.round(b.height));
+    if(showBox){
+      ctx.save();
+      ctx.lineWidth=3;ctx.strokeStyle="rgba(255,40,40,.95)";ctx.fillStyle="rgba(255,40,40,.08)";
+      ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeRect(b.x,b.y,b.width,b.height);
+      ctx.strokeStyle="rgba(60,160,255,.95)";
+      ctx.beginPath();ctx.moveTo(model.x-22,model.y);ctx.lineTo(model.x+22,model.y);ctx.moveTo(model.x,model.y-22);ctx.lineTo(model.x,model.y+22);ctx.stroke();
+      ctx.restore();
+    }
+  }
+  measureEl.innerHTML=info.map(x=>"<small>"+x+"</small>").join("");
+}
+function speak(text,duration=1600){
+  speechText.textContent=text;
+  mouthUntil=performance.now()+duration;
+}
+function startAction(name,text){
+  action={name,start:performance.now()};
+  if(text)speak(text,1800);
+}
+function stopAction(){
+  action=null;
+  placeModel();
+}
+function randomAuto(){
+  const r=Math.random();
+  if(r<0.30){
+    speak(idleLines[Math.floor(Math.random()*idleLines.length)],1600);
+  }else if(r<0.50){
+    startAction("look",null);
+  }else if(r<0.68){
+    startAction("smallJump","ぴょこっと店番するのです。");
+  }else if(r<0.83){
+    startAction("smallWave","こちらへどうぞなのです。");
+  }else{
+    startAction("bow","よろしくお願いいたしますなのです。");
+  }
+  nextAutoAt=performance.now()+3800+Math.random()*4300;
+}
+function applyIdle(t){
+  const breath=Math.sin(t*2.0)*0.45;
+  const sway=Math.sin(t*1.15)*2.2;
+  const slow=Math.sin(t*0.55)*1.0;
+
+  setExact("ParamBreath",breath);
+  setExact("ParamBodyAngleZ",sway);
+  setExact("ParamBodyAngleX",slow);
+  setExact("ParamAngleZ",sway*0.38);
+  setExact("ParamAngleX",currentLook.x+Math.sin(t*0.8)*1.1);
+  setExact("ParamAngleY",currentLook.y+Math.sin(t*0.9)*1.0);
+  setExact("ParamEyeBallX",currentLook.x/30);
+  setExact("ParamEyeBallY",currentLook.y/30);
+
+  setExact("Param2",1.0+Math.sin(t*1.3)*0.8);
+  setExact("Param",1.0+Math.sin(t*1.25+0.8)*0.8);
+}
+function applyBlink(now){
+  const cycle=(now/1000)%5.7;
+  let v=1;
+  if(cycle>4.95&&cycle<5.08)v=0;
+  if(cycle>5.08&&cycle<5.18)v=0.2;
+  setExact("EyeBlink",v);
+  setExact("ParamEyeLOpen",v);
+  setExact("ParamEyeROpen",v);
+}
+function applyMouth(now,t){
+  if(now<mouthUntil){
+    mouthLevel=(Math.sin(t*18)>0?1.0:0.12)+Math.sin(t*31)*0.10;
+  }else{
+    mouthLevel*=0.82;
+  }
+  setExact("ParamMouthOpenY",Math.max(0,Math.min(1,mouthLevel)));
+  setExact("ParamMouthForm",Math.sin(t*8)*0.65);
+}
+function applyAction(now,t){
+  if(!action)return;
+  const a=(now-action.start)/1000;
+  if(action.name==="smallJump"){
+    const b=Math.max(0,Math.sin(a*Math.PI*2.2));
+    const baseY=isMobile()?492:app.renderer.height*0.70;
+    model.y=baseY-b*(isMobile()?14:30);
+    model.scale.y=model.scale.x*(1+b*0.05);
+    setExact("ParamBodyAngleY",b*7);
+    setExact("Param2",b*10);
+    setExact("Param",b*10);
+    if(a>1.1){model.scale.y=model.scale.x;stopAction();}
+  }
+  if(action.name==="smallWave"){
+    const b=Math.sin(a*10);
+    setExact("Param",18+b*10);
+    setExact("Param2",4+Math.sin(a*5)*4);
+    setExact("ParamBodyAngleZ",Math.sin(a*4)*5);
+    setExact("ParamAngleZ",Math.sin(a*4)*2.5);
+    if(a>1.8)stopAction();
+  }
+  if(action.name==="bow"){
+    const b=Math.sin(Math.min(1,a/1.25)*Math.PI);
+    setExact("ParamAngleY",-12*b);
+    setExact("ParamBodyAngleX",-7*b);
+    setExact("Param2",8*b);
+    setExact("Param",8*b);
+    if(a>1.35)stopAction();
+  }
+  if(action.name==="bothHands"){
+    const b=Math.sin(Math.min(1,a/1.15)*Math.PI);
+    setExact("Param",30*b);
+    setExact("Param2",30*b);
+    setExact("ParamBodyAngleY",6*b);
+    if(a>1.3)stopAction();
+  }
+  if(action.name==="mouthTest"){
+    setExact("ParamMouthOpenY",Math.sin(a*18)>0?1:0);
+    setExact("ParamMouthForm",Math.sin(a*8));
+    if(a>2.4)stopAction();
+  }
+  if(action.name==="look"){
+    if(a<0.1){
+      targetLook.x=(Math.random()*2-1)*8;
+      targetLook.y=(Math.random()*2-1)*5;
+    }
+    if(a>1.4){
+      targetLook.x=0;
+      targetLook.y=0;
+    }
+    if(a>2.2)stopAction();
+  }
 }
 function tick(){
   requestAnimationFrame(tick);
   if(!model)return;
-  if(autoMouth){
-    const t=performance.now()/1000;
-    directValues.ParamMouthOpenY=(Math.sin(t*14)>0)?1:0;
-    directValues.ParamMouthForm=Math.sin(t*6);
+  const now=performance.now();
+  const t=now/1000;
+
+  resetParams();
+
+  currentLook.x += (targetLook.x-currentLook.x)*0.045;
+  currentLook.y += (targetLook.y-currentLook.y)*0.045;
+
+  applyIdle(t);
+  applyBlink(now);
+  applyMouth(now,t);
+  applyAction(now,t);
+
+  if(autoMode && now>nextAutoAt){
+    randomAuto();
   }
-  applyDirect();
+  measure();
 }
 async function init(){
   try{
-    const C=getClass();
-    if(!C)throw new Error("Live2DModel クラスが見つかりません。");
-
-    app=new PIXI.Application({
-      view:canvas,
-      resizeTo:window,
-      transparent:true,
-      autoDensity:false,
-      resolution:1
-    });
-
+    const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");
+    resizeOverlay();
+    app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:false,resolution:1});
     setStatus("Live2Dモデルを読み込み中……");
-
-    model=await C.from(MODEL_PATH,{autoInteract:false});
+    model=await C.from(MODEL_PATH,{autoInteract:true});
     app.stage.addChild(model);
-
     if(model.anchor)model.anchor.set(0.5,0.92);
 
     params=collectParams();
+    params.forEach(p=>defaults[p.id]=getV(p.id,p.index));
     placeModel();
-
-    setStatus("読み込み成功。直接テストできます。","取得パラメータ："+params.length+"件");
-    speechText.textContent="スライダーで、直接パラメータを動かしてほしいのです。";
-
-    window.addEventListener("resize",placeModel);
+    setStatus("読み込み成功。v0.9c 腕反映修正版で自動店番中です。","取得パラメータ："+params.length+"件");
+    nextAutoAt=performance.now()+2200;
     tick();
+    window.addEventListener("resize",placeModel);
   }catch(e){
     console.error(e);
     setStatus("読み込み失敗："+e.message);
     speechText.textContent="Live2Dの読み込みに失敗したのです。";
   }
 }
-
-paramRange.addEventListener("input",()=>{directValues.Param=Number(paramRange.value);});
-param2Range.addEventListener("input",()=>{directValues.Param2=Number(param2Range.value);});
-mouthRange.addEventListener("input",()=>{autoMouth=false;directValues.ParamMouthOpenY=Number(mouthRange.value);});
-mouthFormRange.addEventListener("input",()=>{directValues.ParamMouthForm=Number(mouthFormRange.value);});
-
-document.getElementById("rightUpBtn").onclick=()=>{directValues.Param=30;speechText.textContent="右腕を上げるのです。";};
-document.getElementById("rightDownBtn").onclick=()=>{directValues.Param=-30;speechText.textContent="右腕を下げるのです。";};
-document.getElementById("leftUpBtn").onclick=()=>{directValues.Param2=-30;speechText.textContent="左腕を上げるのです。";};
-document.getElementById("leftDownBtn").onclick=()=>{directValues.Param2=30;speechText.textContent="左腕を下げるのです。";};
-document.getElementById("mouthOpenBtn").onclick=()=>{autoMouth=false;directValues.ParamMouthOpenY=1;speechText.textContent="口を開くのです。";};
-document.getElementById("mouthCloseBtn").onclick=()=>{autoMouth=false;directValues.ParamMouthOpenY=0;speechText.textContent="口を閉じるのです。";};
-document.getElementById("autoMouthBtn").onclick=()=>{autoMouth=!autoMouth;speechText.textContent=autoMouth?"口パク連続テストなのです。":"口パクを止めたのです。";};
-document.getElementById("resetBtn").onclick=()=>{autoMouth=false;directValues={Param:0,Param2:0,ParamMouthOpenY:0,ParamMouthForm:0};speechText.textContent="リセットしたのです。";};
-
+document.querySelectorAll(".card").forEach(card=>{
+  card.addEventListener("click",()=>{
+    startAction(card.dataset.action,card.dataset.say);
+  });
+});
+document.getElementById("autoBtn").onclick=()=>{autoMode=!autoMode;speak(autoMode?"自動店番を再開したのです。":"自動店番を一時停止したのです。");};
+document.getElementById("debugBtn").onclick=()=>debugPanel.classList.toggle("open");
+document.getElementById("mDebugBtn").onclick=()=>debugPanel.classList.toggle("open");
+document.getElementById("fitBtn").onclick=placeModel;
+document.getElementById("boxBtn").onclick=()=>{showBox=!showBox;measure()};
+document.getElementById("testMouthBtn").onclick=()=>startAction("mouthTest","あいうえお、口パク強制確認なのです。");
+document.getElementById("testWaveBtn").onclick=()=>startAction("smallWave","ParamとParam2で手をふる確認なのです。");
+document.getElementById("mGuideBtn").onclick=()=>startAction("smallJump","ここは艦隊八幡社の入口なのです。");
+document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは朝昼晩で引けるようにしたいのです。");
+document.getElementById("mGameBtn").onclick=()=>startAction("smallJump","ゲームはCRいずもちゃんへ案内する予定なのです。");
+document.getElementById("mShopBtn").onclick=()=>startAction("smallWave","売店では、お守りや品物を並べるのです。");
 init();
 </script>
 </body>
