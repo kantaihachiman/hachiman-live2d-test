@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.3bbaaaaa</title>
+<title>艦隊八幡社ポータル 展示会仕様 v1.4bbaaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -116,12 +116,38 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
     max-height:calc(100vh - 150px);
   }
 }
+
+/* ===== Exhibition fixed layout v1.4b ===== */
+html,body{width:100%;height:100%;overflow:hidden!important;}
+body{display:flex;justify-content:center;align-items:stretch;background:#1b120d;}
+.app{width:100vw!important;height:100vh!important;max-width:1080px!important;max-height:1920px!important;min-width:900px!important;margin:0 auto!important;overflow:hidden!important;position:relative;}
+header{top:28px!important;left:0!important;right:0!important;z-index:60!important;}
+h1{font-size:64px!important;line-height:1!important;letter-spacing:.09em!important;text-shadow:5px 5px 0 rgba(92,34,25,.30)!important;}
+.sub{font-size:20px!important;margin-top:12px!important;}
+.speech{white-space:pre-line!important;left:42px!important;right:42px!important;top:155px!important;width:auto!important;min-height:190px!important;padding:26px 32px!important;font-size:28px!important;line-height:1.55!important;border-radius:30px!important;border-width:5px!important;z-index:58!important;}
+.cards{display:flex!important;position:absolute!important;z-index:55!important;left:70px!important;right:70px!important;bottom:145px!important;gap:24px!important;justify-content:center!important;}
+.card{flex:1!important;min-height:138px!important;padding:20px 16px!important;border-radius:18px!important;font-size:18px!important;}
+.card .icon{font-size:32px!important;margin-bottom:8px!important;}
+.card .title{font-size:24px!important;}
+.card .desc{font-size:15px!important;}
+.mobileBar{display:none!important;}
+.pcMenu{display:flex!important;position:absolute!important;z-index:76!important;left:50%!important;right:auto!important;bottom:32px!important;transform:translateX(-50%)!important;width:760px!important;gap:14px!important;justify-content:center!important;}
+.pcMenu button{flex:1!important;min-width:0!important;min-height:76px!important;padding:14px 10px!important;border-radius:18px!important;font-size:20px!important;border-width:3px!important;box-shadow:0 5px 0 #5c2219!important;}
+.qrPanel{left:34px!important;right:auto!important;top:34px!important;bottom:auto!important;width:158px!important;padding:10px!important;border-width:4px!important;border-radius:18px!important;z-index:80!important;opacity:.96!important;}
+.qrPanel img{width:132px!important;height:132px!important;margin-bottom:6px!important;}
+.qrPanel .qrTitle{font-size:14px!important;line-height:1.3!important;}
+.qrPanel .qrUrl{display:none!important;}
+.versionBadge{left:34px!important;bottom:30px!important;font-size:16px!important;padding:8px 14px!important;z-index:82!important;}
+.counter{width:760px!important;height:120px!important;left:50%!important;bottom:92px!important;transform:translateX(-50%)!important;border-radius:34px 34px 0 0!important;opacity:.93!important;z-index:20!important;}
+.floor{height:360px!important;bottom:-130px!important;}
+.debugPanel{display:none!important;}
+
 </style>
 </head>
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3baa</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.4baa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -131,13 +157,18 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <div class="card" data-action="shopLink" data-say="はちまん売店はこちらなのです。"><div class="icon">🛍</div><div class="title">はちまん売店</div><div class="desc">開店中</div></div>
 </div>
 
-<div class="versionBadge">Version 1.3b</div>
+<div class="versionBadge">Exhibition v1.4b</div>
 <div class="qrPanel" aria-label="艦隊八幡社ポータル QRコード">
   <img src="data:image/png;base64,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" alt="艦隊八幡社ポータルQR">
-  <div class="qrTitle">スマホで<br>見るのです</div>
+  <div class="qrTitle">スマホで<br>読み取り</div>
   <div class="qrUrl">https://kantaihachiman.github.io/hachiman-live2d-test/</div>
 </div><div class="counter"></div><div class="floor"></div>
-<div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
+<div class="pcMenu">
+  <button id="pcGuideBtn">案内</button>
+  <button id="pcOmikujiBtn">おみくじ</button>
+  <button id="pcGameBtn">ゲーム</button>
+  <button id="pcShopBtn">はちまん売店</button>
+</div>
 
 <section class="debugPanel" id="debugPanel" aria-hidden="true">
   <div id="status"></div>
@@ -163,6 +194,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
 <script>
 const MODEL_PATH="export/hachiman.model3.json";
+const EXHIBITION_MODE=true;
 
 // Apps ScriptのWebアプリURLをここへ貼り付けてください。
 // 例：const RANKING_API_URL="https://script.google.com/macros/s/xxxxxxxxxxxx/exec";
@@ -425,12 +457,11 @@ function applyValues(){
 function placeModel(){
   if(!model||!app)return;
   const w=app.renderer.width,h=app.renderer.height;
-  if(window.innerWidth<=900){
-    model.scale.set(0.055);
-    model.x=172;
-    model.y=492;
-  }
-  else{
+  if(EXHIBITION_MODE){
+    model.scale.set(0.360);
+    model.x=w*0.50;
+    model.y=h*0.70;
+  }else{
     model.scale.set(0.220);
     model.x=w*0.50;
     model.y=h*0.70;
@@ -525,9 +556,10 @@ async function init(){
     setStatus("Live2Dモデルを読み込み中……");
     model=await C.from(MODEL_PATH,{autoInteract:false});
     app.stage.addChild(model);
+    applyExhibitionPlacement();
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.3ba 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.4ba 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     setTimeout(()=>speak(dailyTopicLine(),3000),2500);
 
@@ -587,6 +619,26 @@ document.getElementById("mGuideBtn").onclick=()=>{
 document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
 document.getElementById("mGameBtn").onclick=()=>openSlotGame();
 document.getElementById("mShopBtn").onclick=()=>openHachimanShop();
+
+const pcGuideBtn=document.getElementById("pcGuideBtn");
+if(pcGuideBtn){
+  pcGuideBtn.onclick=()=>{
+    let line="";
+    if(rankingEntries.length && Math.random()<0.55){line=rankingTop3Line();}
+    else if(weatherInfo && Math.random()<0.45){line=weatherLine();}
+    else{line=dailyTopicLine();}
+    startAction("jump",line);
+  };
+}
+const pcOmikujiBtn=document.getElementById("pcOmikujiBtn");
+if(pcOmikujiBtn){
+  pcOmikujiBtn.onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
+}
+const pcGameBtn=document.getElementById("pcGameBtn");
+if(pcGameBtn){pcGameBtn.onclick=()=>openSlotGame();}
+const pcShopBtn=document.getElementById("pcShopBtn");
+if(pcShopBtn){pcShopBtn.onclick=()=>openHachimanShop();}
+
 document.querySelector(".app").addEventListener("pointerdown",(e)=>{
   if(e.target.closest("button")||e.target.closest(".card")||e.target.closest(".debugPanel"))return;
   startAction("jump",randomTouchLine());
