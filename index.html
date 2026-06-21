@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.3acbaaaaa</title>
+<title>艦隊八幡社ポータル v1.3adbaaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -119,18 +119,16 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 
 .qrPanel{display:none!important;}
 
-/* PC版4カード表示修正 v1.3ac */
+/* PC版4カード表示 v1.3ad */
 @media(min-width:901px){
   .cards{
     display:grid!important;
-    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-columns:repeat(4,1fr)!important;
+    left:42px!important;
+    right:42px!important;
+    bottom:92px!important;
     gap:14px!important;
-    left:36px!important;
-    right:36px!important;
-    bottom:94px!important;
     width:auto!important;
-    transform:none!important;
-    box-sizing:border-box!important;
   }
   .card{
     min-width:0!important;
@@ -138,18 +136,9 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
     padding:14px 8px!important;
     box-sizing:border-box!important;
   }
-  .card .icon{
-    font-size:26px!important;
-    margin-bottom:6px!important;
-  }
-  .card .title{
-    font-size:19px!important;
-    white-space:nowrap!important;
-  }
-  .card .desc{
-    font-size:12px!important;
-    white-space:nowrap!important;
-  }
+  .card .icon{font-size:26px!important;margin-bottom:6px!important;}
+  .card .title{font-size:19px!important;white-space:nowrap!important;}
+  .card .desc{font-size:12px!important;white-space:nowrap!important;}
 }
 
 </style>
@@ -157,7 +146,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3ac</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3adaa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -183,6 +172,22 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
     <div class="desc">開店中</div>
   </div>
 </div>
+
+<div class="versionBadge">公開版 v1.3ad</div>
+<div class="counter"></div><div class="floor"></div>
+<div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
+
+<section class="debugPanel" id="debugPanel" aria-hidden="true">
+  <div id="status"></div>
+  <div id="readout"></div>
+  <button id="debugBtn" type="button" style="display:none"></button>
+  <button id="autoBtn" type="button" style="display:none"></button>
+  <button id="testRightBtn" type="button" style="display:none"></button>
+  <button id="testLeftBtn" type="button" style="display:none"></button>
+  <button id="testMouthBtn" type="button" style="display:none"></button>
+  <button id="testWaveBtn" type="button" style="display:none"></button>
+</section>
+
 <div class="mobileBar">
   <button id="mGuideBtn">案内</button>
   <button id="mOmikujiBtn">おみくじ</button>
@@ -560,7 +565,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.3aca 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.3ada 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     setTimeout(()=>speak(dailyTopicLine(),3000),2500);
 
@@ -594,7 +599,6 @@ function openSlotGame(){
 document.querySelectorAll(".card").forEach(card=>{
   card.onclick=()=>{
     if(card.dataset.action==="shopLink"){openHachimanShop();return;}
-    if(card.dataset.action==="slotLink"){openSlotGame();return;}
     if(card.dataset.action==="guide"){
       let line="";
       if(rankingEntries.length && Math.random()<0.55){line=rankingTop3Line();}
@@ -603,6 +607,7 @@ document.querySelectorAll(".card").forEach(card=>{
       startAction("jump",line);
       return;
     }
+    if(card.dataset.action==="slotLink"){openSlotGame();return;}
     if(card.dataset.action==="gameSoon"){startAction("bow","CRいずもちゃんは準備中なのです。もう少し待ってほしいのです。");return;}
     startAction(card.dataset.action,card.dataset.say);
   };
