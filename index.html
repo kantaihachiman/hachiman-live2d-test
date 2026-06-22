@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.3agbaaaaa</title>
+<title>艦隊八幡社ポータル v1.4ebaaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -119,7 +119,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 
 
 
-/* PC版4カード表示 v1.3ag */
+/* PC版4カード表示 v1.4e */
 @media(min-width:901px){
   .cards{
     display:grid!important;
@@ -142,7 +142,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* PCブラウザ縦表示向け：4カード見切れ修正 v1.3ag */
+/* PCブラウザ縦表示向け：4カード見切れ修正 v1.4e */
 @media(min-width:700px){
   .cards{
     display:grid!important;
@@ -190,7 +190,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* 上部QR＋メインゲーム導線 v1.3ag */
+/* 上部QR＋メインゲーム導線 v1.4e */
 .headerQR{
   position:absolute;
   z-index:75;
@@ -262,6 +262,116 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   }
 }
 
+
+
+.devLayoutSwitch{
+position:fixed!important;
+right:8px!important;
+top:8px!important;
+bottom:auto!important;
+z-index:9999!important;
+display:flex!important;
+align-items:center!important;
+gap:3px!important;
+background:rgba(255,255,255,.72)!important;
+border:1px solid rgba(107,75,42,.75)!important;
+border-radius:999px!important;
+padding:3px 4px!important;
+font-size:9px!important;
+line-height:1!important;
+box-shadow:1px 1px 3px rgba(0,0,0,.22)!important;
+}
+.devLayoutSwitch #layoutLabel{
+font-size:9px!important;
+white-space:nowrap!important;
+margin:0 2px 0 0!important;
+color:#4b281b!important;
+font-weight:700!important;
+}
+.devLayoutSwitch button{
+display:inline-flex!important;
+align-items:center!important;
+justify-content:center!important;
+width:auto!important;
+min-width:26px!important;
+height:18px!important;
+margin:0!important;
+padding:1px 4px!important;
+border-radius:999px!important;
+border:1px solid rgba(107,75,42,.65)!important;
+font-size:10px!important;
+line-height:1!important;
+box-shadow:none!important;
+background:rgba(255,249,232,.92)!important;
+color:#4b281b!important;
+}
+.devLayoutSwitch button:active{
+transform:translateY(1px)!important;
+}
+
+
+
+/* v1.4e 強制レイアウト */
+html[data-layout-mode="pc"] .cards{
+  display:grid !important;
+}
+html[data-layout-mode="pc"] .mobileBar{
+  display:none !important;
+}
+
+html[data-layout-mode="mobile"] .cards{
+  display:none !important;
+}
+html[data-layout-mode="mobile"] .mobileBar{
+  display:flex !important;
+}
+
+
+/* v1.4e PCモード：縦型HD向けの見え方補助 */
+html[data-layout-mode="pc"] .cards{
+  bottom:92px!important;
+}
+html[data-layout-mode="pc"] .speech{
+  z-index:50!important;
+}
+
+
+/* v1.4e PCモード：4メニュー横一列固定 */
+html[data-layout-mode="pc"] .cards{
+  display:grid!important;
+  grid-template-columns:repeat(4, minmax(0, 1fr))!important;
+  left:18px!important;
+  right:18px!important;
+  width:auto!important;
+  max-width:none!important;
+  gap:10px!important;
+  bottom:92px!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+html[data-layout-mode="pc"] .card{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:108px!important;
+  padding:12px 6px!important;
+  box-sizing:border-box!important;
+}
+html[data-layout-mode="pc"] .card .icon{
+  font-size:24px!important;
+  margin-bottom:5px!important;
+}
+html[data-layout-mode="pc"] .card .title{
+  font-size:17px!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+}
+html[data-layout-mode="pc"] .card .desc{
+  font-size:11px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
 </style>
 </head>
 <body>
@@ -273,7 +383,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <span>ゲーム体験<br>はこちら</span>
 </button>
 
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3ag</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.4e</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -300,7 +410,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   </div>
 </div>
 
-<div class="versionBadge">公開版 v1.3ag</div>
+<div class="versionBadge">公開版 v1.4e</div>
 <div class="counter"></div><div class="floor"></div>
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
@@ -693,7 +803,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.3aga 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.4ea 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     setTimeout(()=>speak(dailyTopicLine(),3000),2500);
 
@@ -785,5 +895,130 @@ document.querySelector(".app").addEventListener("pointerdown",(e)=>{
 });
 init();
 </script>
+
+<div class="devLayoutSwitch" id="devLayoutSwitch">
+<div id="layoutLabel">Layout: Auto</div>
+<button id="forcePcBtn">PC</button>
+<button id="forceMobileBtn">SP</button>
+<button id="forceAutoBtn">Auto</button>
+</div>
+
+
+<script>
+(function(){
+const DEV_MODE=true;
+const panel=document.getElementById('devLayoutSwitch');
+if(!DEV_MODE && panel){panel.style.display='none';}
+
+const label=document.getElementById('layoutLabel');
+function updateLabel(){
+ const m=localStorage.getItem('layoutMode')||'auto';
+ if(label) label.textContent=m.toUpperCase();
+}
+updateLabel();
+
+document.getElementById('forcePcBtn')?.addEventListener('click',()=>{
+ localStorage.setItem('layoutMode','pc');
+ location.reload();
+});
+document.getElementById('forceMobileBtn')?.addEventListener('click',()=>{
+ localStorage.setItem('layoutMode','mobile');
+ location.reload();
+});
+document.getElementById('forceAutoBtn')?.addEventListener('click',()=>{
+ localStorage.removeItem('layoutMode');
+ location.reload();
+});
+})();
+</script>
+
+
+<script>
+function getLayoutMode(){
+  const mode = localStorage.getItem("layoutMode");
+  if(mode==="pc") return "pc";
+  if(mode==="mobile") return "mobile";
+  return window.innerWidth <= 700 ? "mobile" : "pc";
+}
+
+function applyForcedLayout(){
+  const mode = getLayoutMode();
+  document.documentElement.setAttribute("data-layout-mode", mode);
+
+  const label=document.getElementById("layoutLabel");
+  if(label){
+    label.textContent = mode.toUpperCase();
+  }
+}
+
+window.addEventListener("DOMContentLoaded", applyForcedLayout);
+</script>
+
+
+
+
+
+
+
+
+<script>
+(function(){
+  function getStableLayoutMode(){
+    const mode = localStorage.getItem("layoutMode");
+    if(mode === "pc") return "pc";
+    if(mode === "mobile") return "mobile";
+    return window.innerWidth <= 700 ? "mobile" : "pc";
+  }
+
+  function stableHachimanPlacement(){
+    if(typeof model === "undefined" || !model) return;
+
+    const mode = getStableLayoutMode();
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    if(mode === "pc"){
+      // v1.4e:
+      // サイズ揺れ防止のため、PCモードは固定スケール。
+      // 1020〜1080 x 1920 縦表示で中サイズになる値。
+      model.scale.set(0.145);
+      model.x = w * 0.50;
+      model.y = h * 0.665;
+    }else{
+      // スマホ側は既存レイアウトに近い固定値。
+      model.scale.set(0.050);
+      model.x = w * 0.58;
+      model.y = h * 0.73;
+    }
+  }
+
+  let placementTimer = null;
+  function scheduleStablePlacement(){
+    clearTimeout(placementTimer);
+    placementTimer = setTimeout(stableHachimanPlacement, 120);
+  }
+
+  window.stableHachimanPlacement = stableHachimanPlacement;
+
+  window.addEventListener("resize", scheduleStablePlacement);
+  window.addEventListener("orientationchange", scheduleStablePlacement);
+
+  window.addEventListener("DOMContentLoaded", function(){
+    setTimeout(stableHachimanPlacement, 500);
+    setTimeout(stableHachimanPlacement, 1200);
+    setTimeout(stableHachimanPlacement, 2200);
+  });
+
+  // Live2Dロード直後の取りこぼし対策。
+  // 一定回数だけ実行し、その後は止めるのでサイズが揺れません。
+  let tries = 0;
+  const bootFix = setInterval(function(){
+    tries++;
+    stableHachimanPlacement();
+    if(tries >= 8) clearInterval(bootFix);
+  }, 400);
+})();
+</script>
+
 </body>
 </html>
