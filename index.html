@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.3af-pcstablebaaaaa</title>
+<title>艦隊八幡社ポータル v1.3af-exhibition1020baaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -119,7 +119,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 
 
 
-/* PC版4カード表示 v1.3af-pcstable */
+/* PC版4カード表示 v1.3af-exhibition1020 */
 @media(min-width:901px){
   .cards{
     display:grid!important;
@@ -142,7 +142,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* PCブラウザ縦表示向け：4カード見切れ修正 v1.3af-pcstable */
+/* PCブラウザ縦表示向け：4カード見切れ修正 v1.3af-exhibition1020 */
 @media(min-width:700px){
   .cards{
     display:grid!important;
@@ -190,7 +190,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* 上部QR＋メインゲーム導線 v1.3af-pcstable */
+/* 上部QR＋メインゲーム導線 v1.3af-exhibition1020 */
 .headerQR{
   position:absolute;
   z-index:75;
@@ -246,75 +246,120 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* ===== PC表示安定化版：v1.3af-pcstable ===== */
-/* 余計なJS補正を使わず、v1.3afの表示仕様をCSS中心で安定化 */
-@media(min-width:700px){
-  .cards{
-    display:grid!important;
-    grid-template-columns:repeat(4, minmax(0, 1fr))!important;
-    left:18px!important;
-    right:18px!important;
-    bottom:92px!important;
-    gap:10px!important;
-    width:auto!important;
-    max-width:none!important;
-    transform:none!important;
-    box-sizing:border-box!important;
-  }
-  .card{
-    min-width:0!important;
-    width:auto!important;
-    max-width:none!important;
-    min-height:108px!important;
-    padding:12px 6px!important;
-    box-sizing:border-box!important;
-  }
-  .card .icon{
-    font-size:24px!important;
-    line-height:1!important;
-    margin-bottom:5px!important;
-  }
-  .card .title{
-    font-size:17px!important;
-    line-height:1.25!important;
-    white-space:nowrap!important;
-  }
-  .card .desc{
-    font-size:11px!important;
-    line-height:1.2!important;
-    white-space:nowrap!important;
-  }
-  .headerQR{
-    top:16px!important;
-    left:16px!important;
-  }
+/* ===== 展示会用 1020x1920 縦モニタ PC固定版 ===== */
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden!important;
 }
 
-/* スマホではv1.3afの元仕様を維持 */
-@media(max-width:699px){
-  .cards{
-    display:none!important;
-  }
-  .headerQR{
-    display:block!important;
-    top:8px!important;
-    left:8px!important;
-    width:58px!important;
-    padding:4px!important;
-    border-width:2px!important;
-    border-radius:8px!important;
-    box-shadow:2px 2px 0 rgba(0,0,0,.22)!important;
-    background:rgba(255,249,232,.92)!important;
-    z-index:90!important;
-  }
-  .headerQR img{
-    width:48px!important;
-    height:48px!important;
-    margin:0!important;
-  }
-  .headerQR span{
-    display:none!important;
-  }
+body{
+  margin:0!important;
+  background:#1b120d!important;
+}
+
+.app{
+  width:100vw!important;
+  height:100vh!important;
+  max-width:1020px!important;
+  max-height:1920px!important;
+  min-width:700px!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  position:relative!important;
+}
+
+/* スマホUIを強制的に無効化 */
+.mobileBar{
+  display:none!important;
+}
+
+/* PCカード4枚を常時表示・横一列固定 */
+.cards{
+  display:grid!important;
+  grid-template-columns:repeat(4, minmax(0, 1fr))!important;
+  position:absolute!important;
+  z-index:35!important;
+  left:18px!important;
+  right:18px!important;
+  bottom:92px!important;
+  width:auto!important;
+  max-width:none!important;
+  gap:10px!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+
+.card{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:108px!important;
+  padding:12px 6px!important;
+  box-sizing:border-box!important;
+}
+
+.card .icon{
+  font-size:24px!important;
+  line-height:1!important;
+  margin-bottom:5px!important;
+}
+
+.card .title{
+  font-size:17px!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+}
+
+.card .desc{
+  font-size:11px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
+/* QRは左上固定 */
+.headerQR{
+  display:block!important;
+  top:16px!important;
+  left:16px!important;
+  width:96px!important;
+  padding:6px!important;
+  border-width:3px!important;
+  border-radius:12px!important;
+  z-index:90!important;
+}
+
+.headerQR img{
+  width:78px!important;
+  height:78px!important;
+  margin:0 auto 3px!important;
+}
+
+.headerQR span{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+
+/* 展示会版ではタイトル・吹き出しを安定配置 */
+header{
+  top:28px!important;
+}
+
+.speech{
+  left:28px!important;
+  right:28px!important;
+  top:155px!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:110px!important;
+  z-index:50!important;
+}
+
+.versionBadge{
+  left:24px!important;
+  bottom:24px!important;
+  z-index:80!important;
 }
 
 </style>
@@ -328,7 +373,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <span>ゲーム体験<br>はこちら</span>
 </button>
 
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3af-pcstable-pcstable</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">展示会版 v1.3af-exhibition1020</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -355,7 +400,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   </div>
 </div>
 
-<div class="versionBadge">公開版 v1.3af-pcstable-pcstable</div>
+<div class="versionBadge">展示会版 v1.3af-exhibition1020</div>
 <div class="counter"></div><div class="floor"></div>
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
@@ -748,7 +793,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.3af-pcstablea 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.3af-exhibition1020a 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     setTimeout(()=>speak(dailyTopicLine(),3000),2500);
 
@@ -843,33 +888,29 @@ init();
 
 <script>
 (function(){
-  function isPcViewStable(){
-    return window.innerWidth >= 700;
-  }
+  const EXHIBITION_MODE = true;
 
-  function applyInitialPcPlacement(){
-    if(!isPcViewStable()) return;
+  function placeHachimanExhibition(){
+    if(!EXHIBITION_MODE) return;
     if(typeof model === "undefined" || !model) return;
 
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // v1.3afベースの自然な見た目を崩さない範囲で、縦画面PCのみ少し安定化。
-    // タッチ後の自動補正は行わないため、サイズ揺れを避けます。
-    if(h >= 1100 && w <= 1150){
-      model.scale.set(0.135);
-      model.x = w * 0.50;
-      model.y = h * 0.66;
-    }
+    // 1020x1920縦モニタ向け。大きすぎず、小さすぎない固定値。
+    model.scale.set(0.135);
+    model.x = w * 0.50;
+    model.y = h * 0.66;
   }
 
   window.addEventListener("DOMContentLoaded", function(){
-    setTimeout(applyInitialPcPlacement, 800);
-    setTimeout(applyInitialPcPlacement, 1800);
+    setTimeout(placeHachimanExhibition, 700);
+    setTimeout(placeHachimanExhibition, 1600);
+    setTimeout(placeHachimanExhibition, 2600);
   });
 
   window.addEventListener("resize", function(){
-    setTimeout(applyInitialPcPlacement, 160);
+    setTimeout(placeHachimanExhibition, 180);
   });
 })();
 </script>
