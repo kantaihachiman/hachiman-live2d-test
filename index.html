@@ -2,140 +2,1100 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>公式ゲームセンター入口</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>艦隊八幡社ポータル v1.3af-exhibition1020baaaaa</title>
 <style>
-  :root {
-    --ink: #4a2c1a;
-    --brown: #6e3d24;
-    --red: #c53725;
-    --cream: #fff8df;
-    --paper: #fff9e8;
-    --gold: #f0d58b;
-    --green: #4b8f76;
+*{box-sizing:border-box}
+:root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
+html,body{margin:0;width:100%;height:100%;font-family:"Yu Gothic","Meiryo",sans-serif;background:#20110e;color:var(--cream);overflow:hidden}
+.app{
+  position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:radial-gradient(circle at 50% 20%,rgba(255,226,145,.18),transparent 34%),
+  linear-gradient(180deg,#25120f 0%,#4b281b 50%,#8a581b 100%);
+}
+.wallPattern{position:absolute;inset:0;opacity:.18;pointer-events:none;background-image:linear-gradient(90deg,rgba(255,244,216,.12) 1px,transparent 1px),linear-gradient(0deg,rgba(255,244,216,.08) 1px,transparent 1px);background-size:38px 38px}
+header{position:absolute;z-index:20;top:14px;left:0;right:0;text-align:center;pointer-events:none}
+h1{margin:0;font-size:clamp(34px,6vw,68px);letter-spacing:.08em;color:#fff2d2;text-shadow:4px 4px 0 rgba(60,26,16,.85)}
+.sub{margin-top:7px;font-weight:900;font-size:clamp(13px,2.2vw,18px);color:#f8dfaa}
+#stage{position:absolute;inset:0;width:100vw;height:100vh;z-index:8}
+.speech{
+  position:absolute;z-index:22;top:128px;right:4vw;width:min(430px,36vw);
+  padding:14px 18px;color:#3f2a1e;background:rgba(255,249,232,.96);
+  border:4px solid var(--brown);border-radius:18px;box-shadow:7px 7px 0 rgba(0,0,0,.22);
+  font-weight:900;line-height:1.65;
+}
+.speech small{display:block;color:#855e43;margin-bottom:4px;font-size:12px}
+.cards{position:absolute;z-index:12;left:50%;bottom:86px;transform:translateX(-50%);width:min(980px,88vw);display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{min-height:110px;padding:16px 14px;border:4px solid var(--brown);border-radius:18px;background:linear-gradient(180deg,#fff8e8,#f2d38b);color:#3c251a;box-shadow:0 8px 0 rgba(62,30,19,.55);text-align:center;font-weight:900;cursor:pointer;user-select:none}
+.card:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(62,30,19,.55)}
+.card .icon{font-size:30px;margin-bottom:6px}.card .title{font-size:20px}.card .desc{font-size:12px;margin-top:6px;color:#6e4b34}
+.counter{position:absolute;z-index:3;left:50%;bottom:0;transform:translateX(-50%);width:min(1040px,100vw);height:120px;border:5px solid var(--brown);border-bottom:0;border-radius:24px 24px 0 0;background:linear-gradient(180deg,#efc466 0 28%,#a76232 28% 100%)}
+.floor{position:absolute;z-index:1;left:-10%;right:-10%;bottom:-92px;height:250px;background:repeating-linear-gradient(90deg,#b87938 0 70px,#a86931 70px 76px),linear-gradient(#c48d4f,#8f572b);transform:perspective(600px) rotateX(58deg);transform-origin:bottom;border-top:5px solid #4d2a1a}
+button{padding:10px 12px;color:#fff7df;background:var(--red);border:3px solid var(--brown);border-radius:12px;box-shadow:0 4px 0 #5c2219;font-family:inherit;font-weight:900;cursor:pointer}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{background:var(--green);box-shadow:0 4px 0 #254537}
+.qrPanel{position:absolute;z-index:32;right:12px;bottom:10px;width:118px;padding:7px;border:3px solid rgba(75,40,27,.82);border-radius:14px;background:rgba(255,249,232,.92);color:#4b281b;box-shadow:4px 4px 0 rgba(0,0,0,.20);text-align:center;font-weight:900}
+.qrPanel img{display:block;width:96px;height:96px;margin:0 auto 4px;image-rendering:pixelated}
+.qrPanel .qrTitle{font-size:10px;line-height:1.25}
+.qrPanel .qrUrl{font-size:8px;line-height:1.1;opacity:.75;word-break:break-all}
+@media(max-width:900px){.qrPanel{right:102px;bottom:8px;width:86px;padding:5px;border-radius:12px;opacity:.90}.qrPanel img{width:70px;height:70px;margin-bottom:2px}.qrPanel .qrTitle{font-size:9px}.qrPanel .qrUrl{display:none}}
+.versionBadge{position:absolute;z-index:30;left:12px;bottom:10px;padding:5px 9px;border:2px solid rgba(75,40,27,.7);border-radius:999px;background:rgba(255,249,232,.82);color:#4b281b;font-size:11px;font-weight:900;letter-spacing:.04em}
+.pcMenu{display:none}
+.debugPanel{display:none!important}
+.debugPanel.open{display:block}.debugPanel h2{margin:0 0 8px;color:var(--red);font-size:18px}
+.status,.readout{padding:8px;border:2px solid #7a4a2c;border-radius:10px;background:#fff4d8;font-weight:900;line-height:1.45;margin-bottom:10px;font-size:12px}
+.status small,.readout small{display:block;color:#7a5b42;word-break:break-all}.debugBtns{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mobileBar{display:none}
+@media(max-width:900px){
+  header{top:10px}
+  h1{font-size:34px}
+  .sub{font-size:12px;margin-top:3px}
+
+  .speech{
+    left:14px;
+    right:14px;
+    top:88px;
+    width:auto;
+    min-height:74px;
+    padding:11px 13px;
+    font-size:13px;
+    line-height:1.55;
+    border-radius:17px;
   }
 
-  * {
-    box-sizing: border-box;
+  .cards{display:none}
+  .pcMenu{display:none}
+
+  .counter{
+    height:66px;
+    width:64vw;
+    left:38%;
+    bottom:28px;
+    border-radius:18px 18px 0 0;
+    opacity:.92;
   }
 
-  body {
-    min-height: 100vh;
-    margin: 0;
-    display: grid;
-    place-items: center;
-    padding: 18px;
-    color: var(--ink);
-    background:
-      linear-gradient(rgba(255, 248, 223, 0.92), rgba(255, 248, 223, 0.92)),
-      repeating-linear-gradient(0deg, #f4df9e 0 18px, #efd48b 18px 21px);
-    font-family: "Yu Gothic", "YuGothic", "Hiragino Sans", "Meiryo", sans-serif;
+  .floor{
+    bottom:-84px;
+    height:205px;
   }
 
-  .entrance {
-    width: min(680px, 100%);
-    min-height: min(520px, calc(100vh - 36px));
-    display: grid;
-    place-items: center;
-    padding: 28px;
-    text-align: center;
-    background: var(--paper);
-    border: 5px solid var(--brown);
-    box-shadow: 10px 10px 0 rgba(74, 44, 26, 0.18);
+  .mobileBar{
+    display:flex;
+    position:fixed;
+    z-index:60;
+    right:8px;
+    bottom:18px;
+    width:86px;
+    flex-direction:column;
+    gap:7px;
   }
 
-  .inner {
-    width: min(460px, 100%);
+  .mobileBar button{
+    flex:none;
+    width:86px;
+    min-height:54px;
+    padding:8px 5px;
+    font-size:13px;
+    border-radius:14px;
+  }
+  .mobileBar button.disabled{
+    opacity:.48;
+    filter:grayscale(100%);
+    cursor:not-allowed;
+  }
+  .mobileBar small{
+    font-size:10px;
+    line-height:1;
   }
 
-  h1 {
-    margin: 0 0 24px;
-    color: var(--red);
-    font-size: clamp(28px, 6vw, 44px);
-    letter-spacing: 0.06em;
-    line-height: 1.25;
-    text-shadow: 2px 2px 0 #fff1c4;
+  .debugPanel{
+    left:10px;
+    right:10px;
+    top:92px;
+    width:auto;
+    max-height:calc(100vh - 150px);
+  }
+}
+
+
+
+/* PC版4カード表示 v1.3af-exhibition1020 */
+@media(min-width:901px){
+  .cards{
+    display:grid!important;
+    grid-template-columns:repeat(4,1fr)!important;
+    left:42px!important;
+    right:42px!important;
+    bottom:92px!important;
+    gap:14px!important;
+    width:auto!important;
+  }
+  .card{
+    min-width:0!important;
+    min-height:112px!important;
+    padding:14px 8px!important;
+    box-sizing:border-box!important;
+  }
+  .card .icon{font-size:26px!important;margin-bottom:6px!important;}
+  .card .title{font-size:19px!important;white-space:nowrap!important;}
+  .card .desc{font-size:12px!important;white-space:nowrap!important;}
+}
+
+
+/* PCブラウザ縦表示向け：4カード見切れ修正 v1.3af-exhibition1020 */
+@media(min-width:700px){
+  .cards{
+    display:grid!important;
+    grid-template-columns:repeat(4, minmax(0, 1fr))!important;
+    gap:10px!important;
+    left:18px!important;
+    right:18px!important;
+    bottom:92px!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  .card{
+    min-width:0!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:108px!important;
+    padding:12px 6px!important;
+    box-sizing:border-box!important;
+  }
+  .card .icon{
+    font-size:24px!important;
+    line-height:1!important;
+    margin-bottom:5px!important;
+  }
+  .card .title{
+    font-size:17px!important;
+    line-height:1.25!important;
+    white-space:nowrap!important;
+  }
+  .card .desc{
+    font-size:11px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+  }
+}
+
+/* スマホ版では従来通りカード非表示・下部ボタン表示 */
+@media(max-width:699px){
+  .cards{
+    display:none!important;
+  }
+}
+
+
+/* 上部QR＋メインゲーム導線 v1.3af-exhibition1020 */
+.headerQR{
+  position:absolute;
+  z-index:75;
+  top:24px;
+  left:26px;
+  width:126px;
+  padding:8px;
+  border:4px solid var(--brown);
+  border-radius:16px;
+  background:rgba(255,249,232,.94);
+  box-shadow:5px 5px 0 rgba(0,0,0,.24);
+  color:#4b281b;
+  font-weight:900;
+  line-height:1.25;
+  cursor:pointer;
+}
+.headerQR img{
+  display:block;
+  width:104px;
+  height:104px;
+  margin:0 auto 4px;
+  image-rendering:pixelated;
+  background:#fff;
+}
+.headerQR span{
+  display:block;
+  font-size:12px;
+  text-align:center;
+}
+.headerQR:active{
+  transform:translateY(2px);
+  box-shadow:3px 3px 0 rgba(0,0,0,.24);
+}
+@media(max-width:699px){
+  .headerQR{
+    display:none!important;
+  }
+}
+@media(min-width:700px) and (max-width:980px){
+  .headerQR{
+    top:22px;
+    left:18px;
+    width:108px;
+    padding:7px;
+  }
+  .headerQR img{
+    width:88px;
+    height:88px;
+  }
+  .headerQR span{
+    font-size:11px;
+  }
+}
+
+
+/* ===== 展示会用 1020x1920 縦モニタ PC固定版 ===== */
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden!important;
+}
+
+body{
+  margin:0!important;
+  background:#1b120d!important;
+}
+
+.app{
+  width:100vw!important;
+  height:100vh!important;
+  max-width:1020px!important;
+  max-height:1920px!important;
+  min-width:700px!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  position:relative!important;
+}
+
+/* スマホUIを強制的に無効化 */
+.mobileBar{
+  display:none!important;
+}
+
+/* PCカード4枚を常時表示・横一列固定 */
+.cards{
+  display:grid!important;
+  grid-template-columns:repeat(4, minmax(0, 1fr))!important;
+  position:absolute!important;
+  z-index:35!important;
+  left:18px!important;
+  right:18px!important;
+  bottom:92px!important;
+  width:auto!important;
+  max-width:none!important;
+  gap:10px!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+
+.card{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:108px!important;
+  padding:12px 6px!important;
+  box-sizing:border-box!important;
+}
+
+.card .icon{
+  font-size:24px!important;
+  line-height:1!important;
+  margin-bottom:5px!important;
+}
+
+.card .title{
+  font-size:17px!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+}
+
+.card .desc{
+  font-size:11px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
+/* QRは左上固定 */
+.headerQR{
+  display:block!important;
+  top:16px!important;
+  left:16px!important;
+  width:96px!important;
+  padding:6px!important;
+  border-width:3px!important;
+  border-radius:12px!important;
+  z-index:90!important;
+}
+
+.headerQR img{
+  width:78px!important;
+  height:78px!important;
+  margin:0 auto 3px!important;
+}
+
+.headerQR span{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+
+/* 展示会版ではタイトル・吹き出しを安定配置 */
+header{
+  top:28px!important;
+}
+
+.speech{
+  left:28px!important;
+  right:28px!important;
+  top:155px!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:110px!important;
+  z-index:50!important;
+}
+
+.versionBadge{
+  left:24px!important;
+  bottom:24px!important;
+  z-index:80!important;
+}
+
+@media(max-width:699px), (max-width:950px) and (max-height:520px){
+  html,body{
+    min-width:0!important;
+    overflow:hidden!important;
+    touch-action:manipulation;
   }
 
-  .official-button {
-    display: inline-grid;
-    place-items: center;
-    width: min(390px, 100%);
-    min-height: 76px;
-    padding: 16px 22px;
-    color: #fff8df;
-    background: var(--red);
-    border: 4px solid #7a261b;
-    box-shadow: 0 8px 0 #7a261b;
-    font-size: clamp(20px, 4.8vw, 30px);
-    font-weight: 900;
-    text-decoration: none;
-    touch-action: manipulation;
+  .app{
+    width:100vw!important;
+    height:100vh!important;
+    height:100dvh!important;
+    max-width:none!important;
+    max-height:none!important;
+    min-width:0!important;
+    margin:0!important;
+    overflow:hidden!important;
   }
 
-  .official-button:active {
-    transform: translateY(6px);
-    box-shadow: 0 2px 0 #7a261b;
+  #stage{
+    width:100vw!important;
+    height:100vh!important;
+    height:100dvh!important;
   }
 
-  .message {
-    margin: 24px auto 0;
-    padding: 14px 16px;
-    color: var(--ink);
-    background: #fff1c4;
-    border: 3px solid var(--brown);
-    font-size: clamp(17px, 3.8vw, 22px);
-    font-weight: 900;
-    line-height: 1.6;
+  header{
+    top:max(10px, env(safe-area-inset-top))!important;
+    padding:0 12px!important;
   }
 
-  .message-name {
-    display: block;
-    margin-top: 8px;
-    color: #765035;
-    font-size: 14px;
+  h1{
+    font-size:clamp(26px, 9vw, 34px)!important;
+    line-height:1.05!important;
+    letter-spacing:0!important;
+    text-shadow:3px 3px 0 rgba(60,26,16,.85)!important;
   }
 
-  @media (max-width: 480px) {
-    body {
-      padding: 10px;
-    }
-
-    .entrance {
-      min-height: calc(100vh - 20px);
-      padding: 18px;
-      border-width: 4px;
-      box-shadow: 6px 6px 0 rgba(74, 44, 26, 0.18);
-    }
-
-    h1 {
-      margin-bottom: 18px;
-    }
-
-    .official-button {
-      min-height: 64px;
-      padding: 12px 14px;
-    }
-
-    .message {
-      margin-top: 18px;
-      padding: 12px;
-    }
+  .sub{
+    font-size:11px!important;
+    line-height:1.2!important;
+    margin-top:3px!important;
   }
+
+  .headerQR,
+  .qrPanel,
+  .cards,
+  .pcMenu{
+    display:none!important;
+  }
+
+  .speech{
+    left:10px!important;
+    right:10px!important;
+    top:76px!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:0!important;
+    max-height:30vh!important;
+    max-height:30dvh!important;
+    padding:10px 12px!important;
+    border-width:3px!important;
+    border-radius:14px!important;
+    box-shadow:4px 4px 0 rgba(0,0,0,.22)!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+    overflow:auto!important;
+    z-index:50!important;
+  }
+
+  .speech small{
+    font-size:10px!important;
+    margin-bottom:2px!important;
+  }
+
+  .counter{
+    left:50%!important;
+    bottom:66px!important;
+    width:min(280px, 74vw)!important;
+    height:54px!important;
+    transform:translateX(-50%)!important;
+    border-width:3px!important;
+    border-radius:16px 16px 0 0!important;
+    opacity:.90!important;
+  }
+
+  .floor{
+    bottom:-76px!important;
+    height:190px!important;
+  }
+
+  .mobileBar{
+    display:grid!important;
+    position:fixed!important;
+    z-index:90!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:max(8px, env(safe-area-inset-bottom))!important;
+    width:auto!important;
+    grid-template-columns:repeat(4, minmax(0, 1fr))!important;
+    gap:6px!important;
+  }
+
+  .mobileBar button{
+    width:auto!important;
+    min-width:0!important;
+    min-height:52px!important;
+    padding:7px 4px!important;
+    border-width:2px!important;
+    border-radius:12px!important;
+    box-shadow:0 3px 0 #5c2219!important;
+    font-size:12px!important;
+    line-height:1.15!important;
+    overflow:hidden!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+  }
+
+  .mobileBar small{
+    font-size:9px!important;
+    line-height:1!important;
+  }
+
+  .versionBadge{
+    display:none!important;
+  }
+
+  .debugPanel{
+    left:8px!important;
+    right:8px!important;
+    top:76px!important;
+    width:auto!important;
+    max-height:calc(100dvh - 150px)!important;
+  }
+}
+
+@media(max-width:950px) and (max-height:520px){
+  header{
+    top:6px!important;
+  }
+
+  h1{
+    font-size:24px!important;
+  }
+
+  .sub,
+  .versionBadge,
+  .counter{
+    display:none!important;
+  }
+
+  .speech{
+    top:42px!important;
+    right:104px!important;
+    max-height:38vh!important;
+    max-height:38dvh!important;
+    padding:8px 10px!important;
+    font-size:11px!important;
+  }
+
+  .mobileBar{
+    left:auto!important;
+    right:8px!important;
+    width:88px!important;
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+  }
+
+  .mobileBar button{
+    min-height:40px!important;
+    font-size:11px!important;
+    padding:5px 3px!important;
+  }
+}
+
 </style>
 </head>
 <body>
-  <main class="entrance" aria-label="公式ゲームセンター入口">
-    <div class="inner">
-      <h1>艦隊八幡社<br>ゲームセンター</h1>
-      <a class="official-button" href="https://kantaihachiman.github.io/game-center/">
-        公式ゲームセンター入口へ
-      </a>
-      <p class="message">
-        こちらへ移動お願いしますのです。
-        <span class="message-name">はちまんより</span>
-      </p>
-    </div>
-  </main>
+<div class="app">
+<div class="wallPattern"></div>
+
+<button class="headerQR" id="headerQRBtn" type="button" aria-label="八界のイザナミ テスト版へ">
+  <img src="data:image/png;base64,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" alt="艦隊八幡社ポータル QR">
+  <span>ゲーム体験<br>はこちら</span>
+</button>
+
+<header><h1>艦隊八幡社</h1><div class="sub">展示会版 v1.3af-exhibition1020</div></header>
+<canvas id="stage"></canvas>
+<div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
+
+<div class="cards">
+  <div class="card" data-action="guide" data-say="艦隊八幡社へようこそなのです。はちまんがご案内するのです。">
+    <div class="icon">📖</div>
+    <div class="title">案内</div>
+    <div class="desc">艦隊八幡社</div>
+  </div>
+  <div class="card" data-action="bow" data-say="おみくじは開発中なのです。楽しみにしていてくださいなのです。">
+    <div class="icon">⛩</div>
+    <div class="title">おみくじ</div>
+    <div class="desc">開発中</div>
+  </div>
+  <div class="card" data-action="slotLink" data-say="CRいずもちゃんはこちらなのです。">
+    <div class="icon">🎰</div>
+    <div class="title">ゲーム</div>
+    <div class="desc">CRいずもちゃん</div>
+  </div>
+  <div class="card" data-action="shopLink" data-say="はちまん売店はこちらなのです。">
+    <div class="icon">🛍</div>
+    <div class="title">はちまん売店</div>
+    <div class="desc">開店中</div>
+  </div>
+</div>
+
+<div class="versionBadge">展示会版 v1.3af-exhibition1020</div>
+<div class="counter"></div><div class="floor"></div>
+<div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
+
+<section class="debugPanel" id="debugPanel" aria-hidden="true">
+  <div id="status"></div>
+  <div id="readout"></div>
+  <button id="debugBtn" type="button" style="display:none"></button>
+  <button id="autoBtn" type="button" style="display:none"></button>
+  <button id="testRightBtn" type="button" style="display:none"></button>
+  <button id="testLeftBtn" type="button" style="display:none"></button>
+  <button id="testMouthBtn" type="button" style="display:none"></button>
+  <button id="testWaveBtn" type="button" style="display:none"></button>
+</section>
+
+<div class="mobileBar">
+  <button id="mGuideBtn">案内</button>
+  <button id="mOmikujiBtn">おみくじ</button>
+  <button id="mGameBtn">ゲーム<br><small>開店中</small></button>
+  <button id="mShopBtn">はちまん<br>売店</button>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<script>
+const MODEL_PATH="export/hachiman.model3.json";
+
+// Apps ScriptのWebアプリURLをここへ貼り付けてください。
+// 例：const RANKING_API_URL="https://script.google.com/macros/s/xxxxxxxxxxxx/exec";
+const RANKING_API_URL="https://script.google.com/macros/s/AKfycbybwOEImMHuiC_ze7mbzGLkJP3j9nj6HwO8WEzyWWOM_5PhW-ucjFtD8S_p-XblMS_hnw/exec";
+
+// 一時確認用：index.html?rankingUrl=AppsScriptのURL でも指定できます。
+const urlParams=new URLSearchParams(location.search);
+const RANKING_URL_OVERRIDE=urlParams.get("rankingUrl")||"";
+
+// 天気読み上げ用。初期値は横須賀付近です。
+// latitude / longitude はURLパラメータでも上書きできます。
+// 例：index.html?lat=35.2813&lon=139.6722
+const WEATHER_LAT=Number(urlParams.get("lat")||35.2813);
+const WEATHER_LON=Number(urlParams.get("lon")||139.6722);
+const WEATHER_LABEL=urlParams.get("weatherLabel")||"横須賀";
+const canvas=document.getElementById("stage"), statusEl=document.getElementById("status"), readout=document.getElementById("readout"), speechText=document.getElementById("speechText"), debugPanel=document.getElementById("debugPanel");
+let app=null,model=null,core=null,params=[],autoMode=true,nextAutoAt=0,action=null,mouthUntil=0;
+let rankingEntries=[];
+let rankingLoadedAt=0;
+let weatherInfo=null;
+let weatherLoadedAt=0;
+
+let v={
+  Param:0, Param2:0, ParamMouthOpenY:0, ParamMouthForm:0,
+  ParamBreath:0, ParamBodyAngleX:0, ParamBodyAngleY:0, ParamBodyAngleZ:0,
+  ParamAngleX:0, ParamAngleY:0, ParamAngleZ:0,
+  ParamEyeBallX:0, ParamEyeBallY:0
+};
+
+const idleLines=[
+  "今日も店番中なのです。ゆっくり見ていってほしいのです。",
+  "おみくじ、ゲーム、売店へ案内できるのです。",
+  "艦隊八幡社、開店の儀なのです。",
+  "気になる札を選んでほしいのです。",
+  "水分補給も大事なのです。",
+  "はちまんが入口でご案内するのです。",
+  "今日の日付も、天気も、売店の様子も見守っているのです。",
+  "艦隊八幡社は、少しずつ賑やかになっていくのです。"
+];
+
+function timeGreeting(){
+  const h=new Date().getHours();
+  if(h>=5&&h<10)return "おはようございますなのです。今日も艦隊八幡社へようこそなのです。";
+  if(h>=10&&h<15)return "こんにちはなのです。お昼の店番中なのです。";
+  if(h>=15&&h<18)return "夕方が近いのです。少し涼しくなるとよいのです。";
+  if(h>=18&&h<23)return "こんばんはなのです。夜の艦隊八幡社も開いているのです。";
+  return "夜更かしはほどほどになのです。無理せず休んでほしいのです。";
+}
+
+function todayLine(){
+  const now=new Date();
+  const days=["日","月","火","水","木","金","土"];
+  const m=now.getMonth()+1;
+  const d=now.getDate();
+  const w=days[now.getDay()];
+  return "今日は"+m+"月"+d+"日、"+w+"曜日なのです。";
+}
+
+function dailyTopicLine(){
+  const now=new Date();
+  const day=now.getDay();
+  const date=now.getDate();
+
+  if(day===5){
+    return "今日は金曜日、カレーの日なのです。はちまんも楽しみなのです。";
+  }
+  if(date===8){
+    return "今日は八のつく日なのです。艦隊八幡社には、少し縁起が良い気がするのです。";
+  }
+  if(date===18 || date===28){
+    return "今日は八の気配が強い日なのです。よいことがあるかもしれないのです。";
+  }
+  if(day===0){
+    return "日曜日なのです。ゆっくり艦隊八幡社を見ていってほしいのです。";
+  }
+  if(day===6){
+    return "土曜日なのです。お出かけの前に、少し寄っていくのです。";
+  }
+  return todayLine()+"艦隊八幡社は本日も開店中なのです。";
+}
+const touchLines=[
+  "いらっしゃいませなのです。",
+  "今日も来てくれてうれしいのです。",
+  "艦隊八幡社へようこそなのです。",
+  "はちまんがご案内するのです。",
+  "おみくじも見ていくのです？",
+  "はちまん売店も開店中なのです。",
+  "ゆっくりしていってほしいのです。",
+  "今日はどんな一日になるのでしょうか。",
+  "艦隊八幡社、ただいま開店中なのです。",
+  "左上のQRから、ゲーム体験もできるのです。"
+];
+function randomTouchLine(){
+  return touchLines[Math.floor(Math.random()*touchLines.length)];
+}
+
+function formatNumber(n){
+  return Number(n||0).toLocaleString("ja-JP");
+}
+
+function safeName(name){
+  const s=String(name||"名無しの参拝者").trim();
+  return s || "名無しの参拝者";
+}
+
+function rankingApiUrl(){
+  return RANKING_URL_OVERRIDE || RANKING_API_URL;
+}
+
+async function loadRanking(){
+  const api=rankingApiUrl();
+  if(!api)return false;
+
+  try{
+    const sep=api.includes("?") ? "&" : "?";
+    const url=api + sep + "difficulty=normal&limit=5";
+    const res=await fetch(url,{cache:"no-store"});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+
+    if(data && data.ok && Array.isArray(data.entries)){
+      rankingEntries=data.entries;
+      rankingLoadedAt=Date.now();
+      if(rankingEntries.length===0 && typeof speechText!=="undefined"){
+        speechText.textContent="ランキングは読めましたが、表示する記録がまだ無いようなのです。";
+      }
+      return true;
+    }
+  }catch(err){
+    console.warn("ranking load failed",err);
+    if(typeof speechText!=="undefined"){
+      speechText.textContent="ランキングの読み込みに失敗したのです。通信設定を確認してほしいのです。";
+    }
+  }
+  return false;
+}
+
+function rankingLine(){
+  if(!rankingEntries || rankingEntries.length===0)return "";
+  const top=rankingEntries[0];
+  const name=safeName(top.name);
+  const sales=formatNumber(top.sales);
+  const difficulty=top.difficulty || top.difficultyKey || "ふつう";
+  return "現在の売上一位は、" + name + "さんなのです。" + sales + "文、難易度は" + difficulty + "なのです。";
+}
+
+function rankingTop3Line(){
+  if(!rankingEntries || rankingEntries.length===0)return "";
+  const top3=rankingEntries.slice(0,3);
+  const parts=top3.map((entry,idx)=>{
+    const rank=idx+1;
+    const name=safeName(entry.name);
+    const difficulty=entry.difficulty || entry.difficultyKey || "ふつう";
+    return "・" + rank + "位　" + name + "さん　難易度 " + difficulty;
+  });
+  return ["現在の売上ランキングなのです。", ...parts, "皆さまの商い、見事なのです。"].join("\n");
+}
+
+function weatherCodeText(code){
+  const c=Number(code);
+  if(c===0)return "快晴";
+  if([1,2,3].includes(c))return "くもり気味";
+  if([45,48].includes(c))return "霧";
+  if([51,53,55,56,57].includes(c))return "小雨";
+  if([61,63,65,66,67].includes(c))return "雨";
+  if([71,73,75,77].includes(c))return "雪";
+  if([80,81,82].includes(c))return "にわか雨";
+  if([95,96,99].includes(c))return "雷雨";
+  return "変わりやすい天気";
+}
+
+async function loadWeather(){
+  try{
+    const url="https://api.open-meteo.com/v1/forecast"
+      + "?latitude=" + encodeURIComponent(WEATHER_LAT)
+      + "&longitude=" + encodeURIComponent(WEATHER_LON)
+      + "&current=temperature_2m,weather_code"
+      + "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+      + "&timezone=Asia%2FTokyo";
+    const res=await fetch(url,{cache:"no-store"});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+
+    weatherInfo={
+      temp:data.current && data.current.temperature_2m,
+      code:data.current && data.current.weather_code,
+      max:data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max[0],
+      min:data.daily && data.daily.temperature_2m_min && data.daily.temperature_2m_min[0],
+      rain:data.daily && data.daily.precipitation_probability_max && data.daily.precipitation_probability_max[0]
+    };
+    weatherLoadedAt=Date.now();
+    return true;
+  }catch(err){
+    console.warn("weather load failed",err);
+  }
+  return false;
+}
+
+function weatherLine(){
+  if(!weatherInfo)return "";
+  const weather=weatherCodeText(weatherInfo.code);
+  const temp=Math.round(Number(weatherInfo.temp));
+  const max=Math.round(Number(weatherInfo.max));
+  const min=Math.round(Number(weatherInfo.min));
+  const rain=Number(weatherInfo.rain);
+
+  let line=WEATHER_LABEL+"の今の天気は"+weather+"なのです。気温は"+temp+"度なのです。";
+  if(Number.isFinite(max)&&Number.isFinite(min)){
+    line+="今日の最高気温は"+max+"度、最低気温は"+min+"度くらいなのです。";
+  }
+  if(Number.isFinite(rain)){
+    if(rain>=50)line+="雨が降るかもしれないので、傘があると安心なのです。";
+    else if(max>=28)line+="暑くなりそうなので、水分補給してほしいのです。";
+    else line+="お出かけしやすそうなのです。";
+  }
+  return line;
+}
+
+function randomShopkeeperLine(){
+  const r=Math.random();
+  if(r<0.18){
+    return dailyTopicLine();
+  }
+  if(rankingEntries.length && r<0.42){
+    return Math.random()<0.60 ? rankingTop3Line() : rankingLine();
+  }
+  if(weatherInfo && r<0.64){
+    return weatherLine();
+  }
+  return idleLines[Math.floor(Math.random()*idleLines.length)];
+}
+
+function setStatus(t,d){if(!statusEl)return;statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
+function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
+function idToString(id){if(id==null)return"";if(typeof id==="string")return id;if(id.s)return id.s;if(id.id)return id.id;if(id._id)return id._id;if(id.toString)return id.toString();return String(id)}
+function collectParams(){core=model&&model.internalModel&&model.internalModel.coreModel;const out=[];try{if(core&&core.getParameterCount&&core.getParameterId){for(let i=0;i<core.getParameterCount();i++)out.push({index:i,id:idToString(core.getParameterId(i))})}}catch(e){}return out.filter(p=>p.id)}
+function findParam(id){return params.find(p=>p.id===id)}
+function setParam(id,val){
+  const p=findParam(id);
+  try{if(core&&core.setParameterValueById)core.setParameterValueById(id,Number(val))}catch(e){}
+  try{if(p&&core&&core.setParameterValue)core.setParameterValue(p.index,Number(val))}catch(e){}
+}
+function getParam(id){
+  const p=findParam(id);
+  try{if(core&&core.getParameterValueById)return Number(core.getParameterValueById(id))}catch(e){}
+  try{if(p&&core&&core.getParameterValue)return Number(core.getParameterValue(p.index))}catch(e){}
+  return NaN;
+}
+function applyValues(){
+  Object.keys(v).forEach(id=>setParam(id,v[id]));
+  const lines=[
+    "Param 右腕： "+getParam("Param").toFixed(2),
+    "Param2 左腕： "+getParam("Param2").toFixed(2),
+    "口開閉： "+getParam("ParamMouthOpenY").toFixed(2),
+    "口変形： "+getParam("ParamMouthForm").toFixed(2),
+    "action： "+(action?action.name:"idle"),
+    "params： "+params.length
+  ];
+  if(readout)readout.innerHTML=lines.map(x=>"<small>"+x+"</small>").join("");
+}
+function isCompactPhone(){
+  return window.matchMedia("(max-width:699px), (max-width:950px) and (max-height:520px)").matches;
+}
+function placeModel(){
+  if(!model||!app)return;
+  const w=app.renderer.width,h=app.renderer.height;
+  if(isCompactPhone()){
+    const landscape=window.innerWidth>window.innerHeight;
+    model.scale.set(landscape?0.050:0.072);
+    model.x=w*0.50;
+    model.y=h*(landscape?0.78:0.67);
+  }
+  else{
+    model.scale.set(0.220);
+    model.x=w*0.50;
+    model.y=h*0.70;
+  }
+  if(model.anchor)model.anchor.set(0.5,0.92);
+}
+function speak(text,duration=1700){speechText.textContent=text;mouthUntil=performance.now()+duration}
+function startAction(name,text){action={name,start:performance.now()};if(text)speak(text,1800)}
+function stopAction(){action=null;placeModel()}
+function randomAuto(){
+  const r=Math.random();
+  if(r<.32)speak(randomShopkeeperLine(),1900);
+  else if(r<.50)startAction("look",null);
+  else if(r<.68)startAction("jump","ぴょこっと店番するのです。");
+  else if(r<.84)startAction("wave","こちらへどうぞなのです。");
+  else startAction("bow","よろしくお願いいたしますなのです。");
+  nextAutoAt=performance.now()+3500+Math.random()*4200;
+}
+function zeroValues(){
+  Object.keys(v).forEach(k=>v[k]=0);
+}
+function updateMotion(){
+  const now=performance.now(), t=now/1000;
+  zeroValues();
+
+  // idle base
+  v.ParamBreath=Math.sin(t*2.0)*0.45;
+  v.ParamBodyAngleZ=Math.sin(t*1.15)*2.2;
+  v.ParamBodyAngleX=Math.sin(t*.55)*1.0;
+  v.ParamAngleZ=Math.sin(t*1.15)*0.9;
+  v.ParamAngleX=Math.sin(t*.8)*1.1;
+  v.ParamAngleY=Math.sin(t*.9)*1.0;
+  v.ParamEyeBallX=v.ParamAngleX/30;
+  v.ParamEyeBallY=v.ParamAngleY/30;
+  // 通常時は両腕を下げ気味に固定
+  v.Param=-24+Math.sin(t*1.25+.8)*0.7;
+  v.Param2=-24+Math.sin(t*1.3)*0.7;
+
+  // mouth
+  if(now<mouthUntil){v.ParamMouthOpenY=(Math.sin(t*18)>0)?1.0:0.12;v.ParamMouthForm=Math.sin(t*8)*0.65}
+  else{v.ParamMouthOpenY=0;v.ParamMouthForm=0}
+
+  if(action){
+    const a=(now-action.start)/1000;
+    if(action.name==="jump"){
+      const b=Math.max(0,Math.sin(a*Math.PI*2.2));
+      const compact=isCompactPhone();
+      const baseY=compact?app.renderer.height*(window.innerWidth>window.innerHeight?0.78:0.67):app.renderer.height*.70;
+      model.y=baseY-b*(compact?12:30);
+      model.scale.y=model.scale.x*(1+b*.05);
+      v.ParamBodyAngleY=b*7; v.Param=-24+b*18; v.Param2=-24+b*18;
+      if(a>1.1){model.scale.y=model.scale.x;stopAction()}
+    }
+    if(action.name==="wave"){
+      const b=Math.sin(a*10);
+      v.Param=10+b*16;
+      v.Param2=-24+Math.sin(a*5)*4;
+      v.ParamBodyAngleZ=Math.sin(a*4)*5;
+      v.ParamAngleZ=Math.sin(a*4)*2.5;
+      if(a>1.8)stopAction();
+    }
+    if(action.name==="bow"){
+      const b=Math.sin(Math.min(1,a/1.25)*Math.PI);
+      v.ParamAngleY=-12*b; v.ParamBodyAngleX=-7*b;
+      v.Param=-24+8*b; v.Param2=-24+8*b;
+      if(a>1.35)stopAction();
+    }
+    if(action.name==="look"){
+      v.ParamAngleX=Math.sin(a*2)*8;
+      v.ParamAngleY=Math.cos(a*2)*5;
+      v.ParamEyeBallX=v.ParamAngleX/30;v.ParamEyeBallY=v.ParamAngleY/30;
+      if(a>2.1)stopAction();
+    }
+    if(action.name==="right"){
+      const b=Math.sin(Math.min(1,a/1.2)*Math.PI);v.Param=30*b;if(a>1.3)stopAction();
+    }
+    if(action.name==="left"){
+      const b=Math.sin(Math.min(1,a/1.2)*Math.PI);v.Param2=30*b;if(a>1.3)stopAction();
+    }
+    if(action.name==="mouth"){
+      v.ParamMouthOpenY=(Math.sin(a*16)>0)?1:0;v.ParamMouthForm=Math.sin(a*8);if(a>2.2)stopAction();
+    }
+  }
+
+  if(autoMode&&now>nextAutoAt)randomAuto();
+  applyValues();
+}
+function tick(){requestAnimationFrame(tick);if(model)updateMotion()}
+async function init(){
+  try{
+    const C=getClass();if(!C)throw new Error("Live2DModel クラスが見つかりません。");
+    app=new PIXI.Application({view:canvas,resizeTo:window,transparent:true,autoDensity:false,resolution:1});
+    setStatus("Live2Dモデルを読み込み中……");
+    model=await C.from(MODEL_PATH,{autoInteract:false});
+    app.stage.addChild(model);
+    if(model.anchor)model.anchor.set(0.5,0.92);
+    params=collectParams();placeModel();
+    setStatus("読み込み成功。v1.3af-exhibition1020a 公開版です。","取得パラメータ："+params.length+"件");
+    speak(timeGreeting(),2300);
+    setTimeout(()=>speak(dailyTopicLine(),3000),2500);
+
+    loadRanking().then(ok=>{
+      if(ok && rankingEntries.length){
+        setTimeout(()=>speak(rankingTop3Line(),3600),6100);
+      }
+    });
+
+    loadWeather().then(ok=>{
+      if(ok && weatherInfo){
+        setTimeout(()=>speak(weatherLine(),3600),10100);
+      }
+    });
+
+    nextAutoAt=performance.now()+14500;
+    window.addEventListener("resize",placeModel);
+    tick();
+  }catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
+}
+function openHachimanShop(){
+  startAction("wave","はちまん売店はこちらなのです。");
+  setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/izumo-game/"; },900);
+}
+
+function openSlotGame(){
+  startAction("jump","CRいずもちゃんはこちらなのです。");
+  setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/slot-game/"; },900);
+}
+
+document.querySelectorAll(".card").forEach(card=>{
+  card.onclick=()=>{
+    if(card.dataset.action==="shopLink"){openHachimanShop();return;}
+    if(card.dataset.action==="guide"){
+      let line="";
+      if(rankingEntries.length && Math.random()<0.55){line=rankingTop3Line();}
+      else if(weatherInfo && Math.random()<0.45){line=weatherLine();}
+      else{line=dailyTopicLine();}
+      startAction("jump",line);
+      return;
+    }
+    if(card.dataset.action==="slotLink"){openSlotGame();return;}
+    if(card.dataset.action==="gameSoon"){startAction("bow","CRいずもちゃんは準備中なのです。もう少し待ってほしいのです。");return;}
+    startAction(card.dataset.action,card.dataset.say);
+  };
+});
+document.getElementById("autoBtn").onclick=()=>{autoMode=!autoMode;speak(autoMode?"自動店番を再開したのです。":"自動店番を一時停止したのです。")};
+document.getElementById("debugBtn").onclick=()=>{};
+document.querySelector("header").addEventListener("dblclick",()=>{});
+document.getElementById("testRightBtn").onclick=()=>startAction("right","右腕テストなのです。");
+document.getElementById("testLeftBtn").onclick=()=>startAction("left","左腕テストなのです。");
+document.getElementById("testMouthBtn").onclick=()=>startAction("mouth","あいうえお、口パク確認なのです。");
+document.getElementById("testWaveBtn").onclick=()=>startAction("wave","手ふり確認なのです。");
+document.getElementById("mGuideBtn").onclick=()=>{
+  let line="";
+  if(rankingEntries.length && Math.random()<0.55){
+    line=rankingTop3Line();
+  }else if(weatherInfo && Math.random()<0.45){
+    line=weatherLine();
+  }else{
+    line=dailyTopicLine();
+  }
+  startAction("jump",line);
+};
+document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
+document.getElementById("mGameBtn").onclick=()=>openSlotGame();
+document.getElementById("mShopBtn").onclick=()=>openHachimanShop();
+
+function openMainGame(){
+  window.location.href="https://kantaihachiman.github.io/main-game/";
+}
+
+const headerQRBtn=document.getElementById("headerQRBtn");
+if(headerQRBtn){
+  headerQRBtn.onclick=(ev)=>{
+    ev.stopPropagation();
+    if(typeof startAction==="function"){
+      startAction("jump","八界のイザナミ、テスト版はこちらなのです。");
+      setTimeout(()=>openMainGame(),700);
+    }else{
+      openMainGame();
+    }
+  };
+}
+
+document.querySelector(".app").addEventListener("pointerdown",(e)=>{
+  if(e.target.closest("button")||e.target.closest(".card")||e.target.closest(".debugPanel"))return;
+  startAction("jump",randomTouchLine());
+});
+init();
+</script>
+
+<script>
+(function(){
+  const EXHIBITION_MODE = true;
+
+  function placeHachimanExhibition(){
+    if(!EXHIBITION_MODE) return;
+    if(typeof model === "undefined" || !model) return;
+    if(typeof isCompactPhone === "function" && isCompactPhone()){
+      if(typeof placeModel === "function") placeModel();
+      return;
+    }
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // 1020x1920縦モニタ向け。大きすぎず、小さすぎない固定値。
+    model.scale.set(0.135);
+    model.x = w * 0.50;
+    model.y = h * 0.66;
+  }
+
+  window.addEventListener("DOMContentLoaded", function(){
+    setTimeout(placeHachimanExhibition, 700);
+    setTimeout(placeHachimanExhibition, 1600);
+    setTimeout(placeHachimanExhibition, 2600);
+  });
+
+  window.addEventListener("resize", function(){
+    setTimeout(placeHachimanExhibition, 180);
+  });
+})();
+</script>
+
 </body>
 </html>
